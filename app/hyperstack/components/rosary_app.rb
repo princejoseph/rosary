@@ -31,6 +31,7 @@ class RosaryApp < HyperComponent
             render_prayer_bead(bead)
           end
         end
+        render_nav
       end
     end
   end
@@ -177,8 +178,6 @@ class RosaryApp < HyperComponent
     end
     H1(class: "mystery-heading") { bead[:mystery][@lang] }
     P(class: "mystery-desc") { bead[:mystery][:desc][@lang] }
-
-    render_nav
   end
 
   # ── Prayer bead ──────────────────────────────────────────────────────────────
@@ -204,8 +203,6 @@ class RosaryApp < HyperComponent
     end
 
     DIV(class: "prayer-body") { PRAYERS[prayer_key][:text][@lang] }
-
-    render_nav
   end
 
   # ── Completion screen ────────────────────────────────────────────────────────

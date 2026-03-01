@@ -32,6 +32,7 @@
         height: 100vh; height: 100dvh;
         display: flex; flex-direction: column;
         overflow: hidden;
+        position: relative;
       }
 
       /* Header */
@@ -126,11 +127,34 @@
         text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1.5rem;
       }
 
-      /* Nav — shared */
+      /* Nav — shared (inline on short viewports) */
       .nav-row {
         display: flex; align-items: center; justify-content: space-between;
-        padding-top: 1.5rem; margin-top: 2rem;
+        padding: 1rem 1.5rem;
         border-top: 1px solid #f0f0f0;
+        flex-shrink: 0;
+        background: #fff;
+      }
+
+      /* Nav — floating on tall viewports */
+      @media (min-height: 700px) {
+        .app { --nav-h: 5rem; }
+        .content { padding-bottom: var(--nav-h); }
+        .nav-row {
+          position: absolute;
+          bottom: 1.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 3rem);
+          max-width: 520px;
+          border-top: none;
+          border-radius: 16px;
+          padding: 0.9rem 2rem;
+          background: rgba(255,255,255,0.88);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          box-shadow: 0 4px 24px rgba(0,0,0,0.1), 0 1px 6px rgba(0,0,0,0.06);
+        }
       }
       .btn-nav { background: none; border: none; padding: 0; cursor: pointer; line-height: 1; }
       .btn-nav:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
