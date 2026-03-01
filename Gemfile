@@ -16,7 +16,7 @@ gem "jbuilder"
 gem "rails-hyperstack", github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/rails-hyperstack/*.gemspec"
 gem "hyper-component",  github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-component/*.gemspec"
 gem "hyper-state",      github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-state/*.gemspec"
-gem "hyperstack-config",github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyperstack-config/*.gemspec"
+gem "hyperstack-config", github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyperstack-config/*.gemspec"
 gem "hyper-store",      github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-store/*.gemspec"
 # rails-hyperstack also pulls in hyper-model, hyper-router, hyper-operation;
 # pin them explicitly to the same fork so we get all Rails 7 fixes
@@ -52,6 +52,7 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+  gem "rubocop", ">= 1.12", require: false
 
   gem "rspec-rails"
 end
@@ -64,7 +65,6 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-
 end
 
 

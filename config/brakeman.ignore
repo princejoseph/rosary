@@ -1,0 +1,32 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "149541b0a36e21310353341922ca6bd9100e0ba617d4afa311426ca8cde7da65",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "156007c43276bb852c732000a1aee74da6a3823de659324c000b4d31d3b63c51",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "333113dd709713368fac38746bc2def54d679477c4947a25c548e0d62b48dce6",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "777ad24897d53f9c8feb62af4e7f6d7e389669b5d05021273485d4b59ebbb603",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "847efbaf30da00a2b3dc13635bc3ea7c0498cd0fdb446e8bed2050c1be8e23bd",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "ea4d5c9c074c84aaa91b8ddbc7b517293ebbdcdc8f3c26865a4a7e94e1d70899",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "edf687f759ec9765bd5db185dbc615c80af77d6e7e19386fc42934e7a80307af",
+      "note": "Ruby 3.1.0 used for Hyperstack/Opal compatibility"
+    }
+  ]
+}

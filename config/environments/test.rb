@@ -66,5 +66,5 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   # added by hyperstack installer
-  config.assets.paths << Rails.root.join('public', 'packs-test', 'js').to_s
+  config.assets.paths << Rails.root.join("public", "packs-test", "js").to_s
 end

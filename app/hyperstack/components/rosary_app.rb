@@ -46,7 +46,7 @@ class RosaryApp < HyperComponent
         DIV(class: "mystery-name") { MYSTERIES[@set][:name][@lang] }
       end
       DIV(class: "header-right") do
-        SPAN(class: "step-counter") { "#{[@step, @sequence.length].min} / #{@sequence.length}" }
+        SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
         BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
           .on(:click) { mutate @lang = (@lang == :en ? :ml : :en) }
         BUTTON(class: "lang-btn") do
@@ -85,12 +85,12 @@ class RosaryApp < HyperComponent
 
   def render_opening_bead_track(bead)
     pos = case bead[:prayer]
-          when :apostles_creed then 0
-          when :our_father     then 1
-          when :hail_mary      then 1 + bead[:count]
-          when :glory_be       then 5
-          else 0
-          end
+    when :apostles_creed then 0
+    when :our_father     then 1
+    when :hail_mary      then 1 + bead[:count]
+    when :glory_be       then 5
+    else 0
+    end
 
     DIV(class: "bead-track-wrapper") do
       DIV(class: "bead-track-line")
@@ -101,7 +101,7 @@ class RosaryApp < HyperComponent
           { idx: 2, special: false },
           { idx: 3, special: false },
           { idx: 4, special: false },
-          { idx: 5, special: true  },
+          { idx: 5, special: true  }
         ].each do |b|
           state = b[:idx] < pos ? " bead-done" : (b[:idx] == pos ? " bead-active" : "")
           DIV(class: "bead#{b[:special] ? ' bead-special' : ''}#{state}")
@@ -114,13 +114,13 @@ class RosaryApp < HyperComponent
 
   def render_decade_bead_track(bead)
     pos = case bead[:prayer]
-          when :mystery_announce then -1
-          when :our_father       then 0
-          when :hail_mary        then bead[:count]
-          when :glory_be         then 11
-          when :fatima           then 12
-          else -1
-          end
+    when :mystery_announce then -1
+    when :our_father       then 0
+    when :hail_mary        then bead[:count]
+    when :glory_be         then 11
+    when :fatima           then 12
+    else -1
+    end
 
     DIV(class: "bead-track-wrapper") do
       DIV(class: "bead-track-line")
@@ -310,6 +310,6 @@ class RosaryApp < HyperComponent
   end
 
   def save_theme
-    `localStorage.setItem('rosary_theme', #{@theme.to_s})`
+    `localStorage.setItem('rosary_theme', #{@theme})`
   end
 end

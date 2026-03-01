@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount Hyperstack::Engine => '/hyperstack'
+  mount Hyperstack::Engine => "/hyperstack"
 
   get "up" => "rails/health#show", as: :rails_health_check
 
