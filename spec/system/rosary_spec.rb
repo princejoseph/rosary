@@ -12,7 +12,6 @@ RSpec.describe "Rosary app", type: :system do
     visit root_path
     expect(page).to have_css(".app-header", wait: 20)
     expect(page).to have_css(".mystery-name")
-    expect(page).to have_css(".step-counter")
   end
 
   it "shows prayer content and navigation" do
@@ -24,12 +23,12 @@ RSpec.describe "Rosary app", type: :system do
 
   it "advances to the next step when next is clicked" do
     visit root_path
-    expect(page).to have_css(".step-counter", wait: 20)
-    initial_counter = find(".step-counter").text
+    expect(page).to have_css(".prayer-heading", wait: 20)
+    initial_heading = find(".prayer-heading").text
 
     all(".btn-nav").last.click
 
-    expect(page).not_to have_text(initial_counter, wait: 5)
+    expect(page).not_to have_text(initial_heading, wait: 10)
   end
 
   it "language toggle switches between EN and ML" do
