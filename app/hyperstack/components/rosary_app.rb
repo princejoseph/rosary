@@ -2,7 +2,7 @@ class RosaryApp < HyperComponent
   include RosaryData
 
   before_mount do
-    @lang  = :en
+    @lang  = load_saved_lang || :en
     @theme = load_saved_theme || :minimal
     @set   = MYSTERY_FOR_DAY[Time.now.wday]
     saved_step = load_saved_step
@@ -49,7 +49,7 @@ class RosaryApp < HyperComponent
       DIV(class: "header-right") do
         SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
         BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
-          .on(:click) { mutate @lang = (@lang == :en ? :ml : :en) }
+          .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
         BUTTON(class: "lang-btn") do
           @theme == :classic ? "Minimal" : "Classic"
         end.on(:click) do
@@ -308,5 +308,14 @@ class RosaryApp < HyperComponent
 
   def save_theme
     `localStorage.setItem('rosary_theme', #{@theme})`
+  end
+
+  def load_saved_lang
+    val = `localStorage.getItem('rosary_lang')`
+    `#{val} === null` ? nil : val.to_sym
+  end
+
+  def save_lang
+    `localStorage.setItem('rosary_lang', #{@lang.to_s})`
   end
 end
