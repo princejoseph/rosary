@@ -45,9 +45,9 @@ class RosaryApp < HyperComponent
       DIV do
         DIV(class: "mystery-day")  { MYSTERIES[@set][:days][@lang] }
         DIV(class: "mystery-name") { MYSTERIES[@set][:name][@lang] }
+        SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
       end
       DIV(class: "header-right") do
-        SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
         BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
           .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
         BUTTON(class: "lang-btn") do
