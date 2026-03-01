@@ -27,14 +27,19 @@
         -webkit-text-size-adjust: 100%;
       }
 
-      /* App shell */
-      .app { min-height: 100vh; display: flex; flex-direction: column; }
+      /* App shell — locked to true viewport height, no page scroll */
+      .app {
+        height: 100vh; height: 100dvh;
+        display: flex; flex-direction: column;
+        overflow: hidden;
+      }
 
       /* Header */
       .app-header {
         display: flex; align-items: center; justify-content: space-between;
         padding: 0.9rem 1.5rem;
         border-bottom: 1px solid #eee;
+        flex-shrink: 0;
       }
       .mystery-day  { font-size: 0.7rem; color: #bbb; font-family: monospace; text-transform: uppercase; letter-spacing: 0.1em; }
       .mystery-name { font-size: 0.95rem; font-weight: 600; color: #222; margin-top: 0.15rem; }
@@ -48,14 +53,16 @@
       .lang-btn:hover { border-color: #bbb; color: #444; }
 
       /* Progress */
-      .progress-wrap { height: 2px; background: #f5f5f5; }
+      .progress-wrap { height: 2px; background: #f5f5f5; flex-shrink: 0; }
       .progress-fill { height: 2px; background: #e8a020; transition: width 0.4s ease; }
 
-      /* Content */
+      /* Content — scrolls internally, nav stays visible */
       .content {
         flex: 1; display: flex; flex-direction: column;
         max-width: 560px; width: 100%;
         margin: 0 auto; padding: 1.75rem 1.5rem 2rem;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       /* Decade dots */
