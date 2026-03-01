@@ -27,6 +27,10 @@
     {
       "fingerprint": "edf687f759ec9765bd5db185dbc615c80af77d6e7e19386fc42934e7a80307af",
       "note": "Ruby 3.1.0 used for Hyperstack/Opal compatibility"
+    },
+    {
+      "fingerprint": "c83d6465c7c81974b027288c636b485eb598b1c2bb5897d14ed0f839ac636784",
+      "note": "Opal backtick JS interpolation - not shell command injection"
     }
   ]
 }
