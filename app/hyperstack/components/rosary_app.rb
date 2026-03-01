@@ -316,6 +316,6 @@ class RosaryApp < HyperComponent
   end
 
   def save_lang
-    `localStorage.setItem('rosary_lang', #{@lang.to_s})`
+    `localStorage.setItem('rosary_lang', #{@lang})`
   end
 end

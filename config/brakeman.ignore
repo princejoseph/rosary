@@ -5,10 +5,6 @@
       "note": "Opal backtick JS interpolation - not shell command injection"
     },
     {
-      "fingerprint": "156007c43276bb852c732000a1aee74da6a3823de659324c000b4d31d3b63c51",
-      "note": "Opal backtick JS interpolation - not shell command injection"
-    },
-    {
       "fingerprint": "333113dd709713368fac38746bc2def54d679477c4947a25c548e0d62b48dce6",
       "note": "Opal backtick JS interpolation - not shell command injection"
     },
@@ -30,6 +26,14 @@
     },
     {
       "fingerprint": "c83d6465c7c81974b027288c636b485eb598b1c2bb5897d14ed0f839ac636784",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "e71c2aa66ef9f63d1c5cce1b4054aa854fe25b48c3940fc935f56c69952b6a5c",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "7c860dfba2249eca8873996856bf467ce330ef9ffd00983ba2322761f65d9f2a",
       "note": "Opal backtick JS interpolation - not shell command injection"
     }
   ]
