@@ -35,6 +35,14 @@
     {
       "fingerprint": "7c860dfba2249eca8873996856bf467ce330ef9ffd00983ba2322761f65d9f2a",
       "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "6e8b4b85b1858af1b19c203b7ac106801e2215033f34848282b1b0e79ba3fc9a",
+      "note": "Opal backtick JS interpolation - not shell command injection"
+    },
+    {
+      "fingerprint": "735ad20a6f39ca7f60c97a1cbbaf32c9c395373f9d39d683465bc92b26f5c06a",
+      "note": "Opal backtick JS interpolation - not shell command injection"
     }
   ]
 }

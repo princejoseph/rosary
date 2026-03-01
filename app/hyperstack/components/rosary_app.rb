@@ -2,22 +2,27 @@ class RosaryApp < HyperComponent
   include RosaryData
 
   before_mount do
-    @lang  = load_saved_lang || :en
-    @theme = load_saved_theme || :minimal
-    @set   = MYSTERY_FOR_DAY[Time.now.wday]
-    saved_step = load_saved_step
-    saved_set  = load_saved_set
-    if saved_set && saved_set != @set
-      clear_saved_progress
-      @step = 0
+    @lang      = load_saved_lang || :en
+    @theme     = load_saved_theme || :minimal
+    @menu_open = false
+
+    today_set  = MYSTERY_FOR_DAY[Time.now.wday]
+    today_date = Time.now.strftime("%Y-%m-%d")
+
+    if load_saved_date == today_date
+      @set  = load_saved_set || today_set
+      @step = load_saved_step || 0
     else
-      @step = saved_step || 0
+      clear_saved_progress
+      @set  = today_set
+      @step = 0
     end
     @sequence = build_sequence(@set)
   end
 
   render do
     DIV(class: "app#{@theme == :classic ? ' classic' : ''}") do
+      render_mystery_menu
       render_header
       if @step >= @sequence.length
         render_complete
@@ -38,15 +43,53 @@ class RosaryApp < HyperComponent
 
   private
 
+  # ── Mystery picker menu ──────────────────────────────────────────────────────
+
+  def render_mystery_menu
+    return unless @menu_open
+
+    today_set = MYSTERY_FOR_DAY[Time.now.wday]
+
+    DIV(class: "menu-overlay").on(:click) { mutate @menu_open = false }
+    DIV(class: "mystery-menu") do
+      DIV(class: "menu-title") { @lang == :en ? "Choose Mysteries" : "രഹസ്യങ്ങൾ തിരഞ്ഞെടുക്കുക" }
+      %i[joyful sorrowful glorious luminous].each do |key|
+        css = [ "menu-item" ]
+        css << "menu-item-today"    if key == today_set
+        css << "menu-item-selected" if key == @set
+        DIV(class: css.join(" ")) do
+          DIV do
+            DIV(class: "menu-item-name") { MYSTERIES[key][:name][@lang] }
+            DIV(class: "menu-item-days") { MYSTERIES[key][:days][@lang] }
+          end
+          I(class: "bi bi-check2 menu-check") if key == @set
+        end.on(:click) { select_set(key) }
+      end
+    end
+  end
+
+  def select_set(key)
+    mutate do
+      @set      = key
+      @step     = 0
+      @sequence = build_sequence(@set)
+      @menu_open = false
+      save_progress
+    end
+  end
+
   # ── Header ──────────────────────────────────────────────────────────────────
 
   def render_header
     DIV(class: "app-header") do
-      DIV do
+      DIV(class: "mystery-selector") do
         DIV(class: "mystery-day")  { MYSTERIES[@set][:days][@lang] }
-        DIV(class: "mystery-name") { MYSTERIES[@set][:name][@lang] }
+        DIV(class: "mystery-name") do
+          SPAN { MYSTERIES[@set][:name][@lang] }
+          I(class: "bi bi-chevron-down mystery-selector-icon")
+        end
         SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
-      end
+      end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
         BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
           .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
@@ -280,15 +323,18 @@ class RosaryApp < HyperComponent
   end
 
   def save_progress
-    set_str = @set.to_s
+    set_str  = @set.to_s
     step_str = @step.to_s
+    date_str = Time.now.strftime("%Y-%m-%d")
     `localStorage.setItem('rosary_step', #{step_str})`
     `localStorage.setItem('rosary_set',  #{set_str})`
+    `localStorage.setItem('rosary_date', #{date_str})`
   end
 
   def clear_saved_progress
     `localStorage.removeItem('rosary_step')`
     `localStorage.removeItem('rosary_set')`
+    `localStorage.removeItem('rosary_date')`
   end
 
   def load_saved_step
@@ -299,6 +345,11 @@ class RosaryApp < HyperComponent
   def load_saved_set
     val = `localStorage.getItem('rosary_set')`
     `#{val} === null` ? nil : val.to_sym
+  end
+
+  def load_saved_date
+    val = `localStorage.getItem('rosary_date')`
+    `#{val} === null` ? nil : val
   end
 
   def load_saved_theme
