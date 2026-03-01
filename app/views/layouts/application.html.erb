@@ -148,8 +148,12 @@
           width: calc(100% - 3rem);
           max-width: 520px;
           border-top: none;
-          border-radius: 16px;
           padding: 0.9rem 2rem;
+          background: transparent;
+        }
+        /* Classic gets the glass pill; minimal stays bare */
+        .app.classic .nav-row {
+          border-radius: 16px;
           background: rgba(255,255,255,0.88);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
