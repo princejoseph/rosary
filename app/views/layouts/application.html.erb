@@ -303,6 +303,37 @@
       .menu-item-today .menu-item-days { color: #e8a020; opacity: 0.75; }
       .menu-check { color: #e8a020; font-size: 1.1rem; flex-shrink: 0; }
 
+      .menu-item-confirm .menu-item-name { color: #c88a10; }
+      .menu-item-confirm .menu-item-days { color: #c88a10; opacity: 0.75; }
+      .menu-item-confirm { background: #fffbf0; margin: 0 -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+
+      .menu-warning {
+        border-top: 1px solid #f5f5f5; margin-top: 0.5rem; padding-top: 1rem;
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      }
+      .menu-warning-text {
+        font-size: 0.78rem; color: #999; font-style: italic; flex: 1;
+      }
+      .menu-warning-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+      .menu-btn {
+        border: none; border-radius: 20px; padding: 0.35rem 1rem;
+        font-family: 'Lora', serif; font-size: 0.78rem; cursor: pointer; transition: opacity 0.15s;
+      }
+      .menu-btn-cancel { background: #f0f0f0; color: #666; }
+      .menu-btn-cancel:hover { opacity: 0.75; }
+      .menu-btn-switch { background: #e8a020; color: #fff; }
+      .menu-btn-switch:hover { background: #c88a10; }
+
+      @media (min-width: 640px) {
+        .mystery-menu {
+          bottom: auto; top: 50%; left: 50%; right: auto;
+          transform: translate(-50%, -50%);
+          width: 400px; border-radius: 16px;
+          padding: 1.5rem 1.75rem 1.75rem;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+        }
+      }
+
       @media (max-width: 600px) {
         .prayer-heading  { font-size: 2.3rem; }
         .mystery-heading { font-size: 2rem; }

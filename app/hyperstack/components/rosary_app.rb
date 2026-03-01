@@ -2,9 +2,10 @@ class RosaryApp < HyperComponent
   include RosaryData
 
   before_mount do
-    @lang      = load_saved_lang || :en
-    @theme     = load_saved_theme || :minimal
-    @menu_open = false
+    @lang        = load_saved_lang || :en
+    @theme       = load_saved_theme || :minimal
+    @menu_open   = false
+    @confirm_set = nil
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
     today_date = Time.now.strftime("%Y-%m-%d")
@@ -50,30 +51,54 @@ class RosaryApp < HyperComponent
 
     today_set = MYSTERY_FOR_DAY[Time.now.wday]
 
-    DIV(class: "menu-overlay").on(:click) { mutate @menu_open = false }
+    DIV(class: "menu-overlay").on(:click) { mutate { @menu_open = false; @confirm_set = nil } }
     DIV(class: "mystery-menu") do
       DIV(class: "menu-title") { @lang == :en ? "Choose Mysteries" : "രഹസ്യങ്ങൾ തിരഞ്ഞെടുക്കുക" }
       %i[joyful sorrowful glorious luminous].each do |key|
         css = [ "menu-item" ]
         css << "menu-item-today"    if key == today_set
         css << "menu-item-selected" if key == @set
+        css << "menu-item-confirm"  if key == @confirm_set
         DIV(class: css.join(" ")) do
           DIV do
             DIV(class: "menu-item-name") { MYSTERIES[key][:name][@lang] }
             DIV(class: "menu-item-days") { MYSTERIES[key][:days][@lang] }
           end
           I(class: "bi bi-check2 menu-check") if key == @set
-        end.on(:click) { select_set(key) }
+        end.on(:click) do
+          if key == @set
+            mutate { @menu_open = false; @confirm_set = nil }
+          elsif key == @confirm_set
+            select_set(key)
+          else
+            mutate @confirm_set = key
+          end
+        end
+      end
+
+      if @confirm_set
+        DIV(class: "menu-warning") do
+          SPAN(class: "menu-warning-text") do
+            @lang == :en ? "This will reset your current progress." : "നിലവിലെ പുരോഗതി നഷ്ടപ്പെടും."
+          end
+          DIV(class: "menu-warning-actions") do
+            BUTTON(class: "menu-btn menu-btn-cancel") { @lang == :en ? "Cancel" : "റദ്ദാക്കുക" }
+              .on(:click) { mutate @confirm_set = nil }
+            BUTTON(class: "menu-btn menu-btn-switch") { @lang == :en ? "Switch" : "മാറ്റുക" }
+              .on(:click) { select_set(@confirm_set) }
+          end
+        end
       end
     end
   end
 
   def select_set(key)
     mutate do
-      @set      = key
-      @step     = 0
-      @sequence = build_sequence(@set)
-      @menu_open = false
+      @set         = key
+      @step        = 0
+      @sequence    = build_sequence(@set)
+      @menu_open   = false
+      @confirm_set = nil
       save_progress
     end
   end
