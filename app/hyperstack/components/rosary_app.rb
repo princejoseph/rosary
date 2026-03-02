@@ -165,8 +165,10 @@ class RosaryApp < HyperComponent
       end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
         DIV(class: "header-btns") do
-          BUTTON(class: "lang-btn") { @lang == :en ? "മല" : "EN" }
-            .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
+          BUTTON(class: "lang-btn") do
+            I(class: "bi bi-translate")
+            SPAN { @lang == :en ? " മല" : " EN" }
+          end.on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
           BUTTON(class: "lang-btn") do
             if @theme == :classic
               I(class: "bi bi-feather")
