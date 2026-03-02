@@ -60,7 +60,8 @@ class RosaryApp < HyperComponent
         css << "menu-item-selected" if key == @set
         css << "menu-item-confirm"  if key == @confirm_set
         DIV(class: css.join(" ")) do
-          DIV do
+          I(class: "bi #{MYSTERIES[key][:icon]} menu-item-icon")
+          DIV(class: "menu-item-text") do
             DIV(class: "menu-item-name") { MYSTERIES[key][:name][@lang] }
             DIV(class: "menu-item-days") { MYSTERIES[key][:days][@lang] }
           end
@@ -110,6 +111,7 @@ class RosaryApp < HyperComponent
       DIV(class: "mystery-selector") do
         DIV(class: "mystery-day")  { MYSTERIES[@set][:days][@lang] }
         DIV(class: "mystery-name") do
+          I(class: "bi #{MYSTERIES[@set][:icon]} mystery-type-icon")
           SPAN { MYSTERIES[@set][:name][@lang] }
           I(class: "bi bi-chevron-down mystery-selector-icon")
         end

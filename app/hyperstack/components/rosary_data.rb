@@ -46,6 +46,7 @@ module RosaryData
 
   MYSTERIES = {
     joyful: {
+      icon: "bi-flower3",
       name: { en: "Joyful Mysteries", ml: "സന്തോഷകരമായ ദിവ്യരഹസ്യങ്ങൾ" },
       days:  { en: "Monday & Saturday", ml: "തിങ്കൾ & ശനി" },
       list: [
@@ -87,6 +88,7 @@ module RosaryData
       ]
     },
     sorrowful: {
+      icon: "bi-droplet-fill",
       name: { en: "Sorrowful Mysteries", ml: "ദുഃഖത്തിന്റെ രഹസ്യങ്ങൾ" },
       days:  { en: "Tuesday & Friday", ml: "ചൊവ്വ & വെള്ളി" },
       list: [
@@ -128,6 +130,7 @@ module RosaryData
       ]
     },
     glorious: {
+      icon: "bi-trophy-fill",
       name: { en: "Glorious Mysteries", ml: "മഹത്ത്വത്തിന്റെ രഹസ്യങ്ങൾ" },
       days:  { en: "Wednesday & Sunday", ml: "ബുധൻ & ഞായർ" },
       list: [
@@ -169,6 +172,7 @@ module RosaryData
       ]
     },
     luminous: {
+      icon: "bi-sun-fill",
       name: { en: "Luminous Mysteries", ml: "പ്രകാശത്തിന്റെ രഹസ്യങ്ങൾ" },
       days:  { en: "Thursday", ml: "വ്യാഴം" },
       list: [
