@@ -218,7 +218,6 @@ class RosaryApp < HyperComponent
       elsif bead[:prayer] != :hail_holy_queen
         render_opening_bead_track(bead)
       end
-
     end
   end
 
