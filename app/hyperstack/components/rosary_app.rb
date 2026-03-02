@@ -99,7 +99,6 @@ class RosaryApp < HyperComponent
           end
         end
       end
-
     end
   end
 
