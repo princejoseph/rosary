@@ -16,10 +16,8 @@ class RosaryApp < HyperComponent
     @menu_open      = false
     @confirm_set    = nil
     @confirm_jump   = nil
-    @speaking          = false
-    @auto_play         = false
-    @en_tts_available  = `'speechSynthesis' in window`
-    @ml_tts_available  = false
+    @speaking   = false
+    @auto_play  = false
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
     today_date = Time.now.strftime("%Y-%m-%d")
@@ -33,24 +31,6 @@ class RosaryApp < HyperComponent
       @step = 0
     end
     @sequence = build_sequence(@set)
-  end
-
-  after_mount do
-    `
-      if (!('speechSynthesis' in window)) return;
-      var checkMl = function() {
-        var voices = window.speechSynthesis.getVoices();
-        if (voices.length === 0) return false;
-        var hasMl = voices.some(function(v) { return v.lang.startsWith('ml'); });
-        #{mutate @ml_tts_available = `hasMl`};
-        return true;
-      };
-      if (!checkMl()) {
-        window.speechSynthesis.addEventListener('voiceschanged', checkMl, { once: true });
-        setTimeout(checkMl, 1000);
-        setTimeout(checkMl, 3000);
-      }
-    `
   end
 
   render do
@@ -342,17 +322,16 @@ class RosaryApp < HyperComponent
   # ── Shared nav buttons ───────────────────────────────────────────────────────
 
   def render_nav
-    is_last  = @step >= @sequence.length - 1
-    tts_ok   = @lang == :en ? @en_tts_available : @ml_tts_available
+    is_last = @step >= @sequence.length - 1
     DIV(class: "nav-row") do
       if @theme == :minimal
         BUTTON(class: "btn-nav", disabled: @step == 0) do
           I(class: "bi bi-arrow-left")
         end.on(:click) { go_back }
-        BUTTON(class: "btn-nav btn-nav-speak", disabled: !tts_ok) do
+        BUTTON(class: "btn-nav btn-nav-speak") do
           I(class: @speaking ? "bi bi-pause-fill" : "bi bi-play-fill")
         end.on(:click) { @speaking ? stop_speaking : speak_current }
-        BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}", disabled: !tts_ok) do
+        BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}") do
           I(class: "bi bi-repeat")
         end.on(:click) { toggle_auto_play }
         BUTTON(class: "btn-nav btn-nav-next") do
@@ -362,11 +341,11 @@ class RosaryApp < HyperComponent
         BUTTON(class: "btn-nav", disabled: @step == 0) do
           I(class: "bi bi-arrow-left-circle-fill", style: { fontSize: "3rem", color: "#ddd" })
         end.on(:click) { go_back }
-        BUTTON(class: "btn-nav btn-nav-speak", disabled: !tts_ok) do
+        BUTTON(class: "btn-nav btn-nav-speak") do
           icon = @speaking ? "bi-pause-circle-fill" : "bi-play-circle-fill"
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)", opacity: "0.7" })
         end.on(:click) { @speaking ? stop_speaking : speak_current }
-        BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}", disabled: !tts_ok) do
+        BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}") do
           I(class: "bi bi-repeat", style: { fontSize: "1.1rem" })
         end.on(:click) { toggle_auto_play }
         BUTTON(class: "btn-nav") do
@@ -406,14 +385,10 @@ class RosaryApp < HyperComponent
 
     DIV(class: "prayer-body") do
       if @speaking
-        offset = 0
-        PRAYERS[prayer_key][:text][@lang].split(/(\s+)/).each do |chunk|
-          if chunk.match?(/\S/)
-            SPAN(class: "prayer-word", data: { start: offset, finish: offset + chunk.length }) { chunk }
-          else
-            SPAN { chunk }
-          end
-          offset += chunk.length
+        words = PRAYERS[prayer_key][:text][@lang].split
+        words.each_with_index do |word, idx|
+          SPAN(class: "prayer-word", data: { idx: idx }) { word }
+          SPAN { " " } unless idx == words.length - 1
         end
       else
         PRAYERS[prayer_key][:text][@lang]
@@ -509,41 +484,27 @@ class RosaryApp < HyperComponent
     end
   end
 
-  def speak_current
-    bead = @sequence[@step]
-    text = if bead[:prayer] == :mystery_announce
-      "#{bead[:ordinal][@lang]} #{@lang == :en ? 'Mystery' : 'രഹസ്യം'}. #{bead[:mystery][@lang]}. #{bead[:mystery][:desc][@lang]}"
+  def audio_key_for_bead(bead)
+    if bead[:prayer] == :mystery_announce
+      "#{@set}_mystery_#{bead[:decade]}"
     else
-      PRAYERS[bead[:prayer]][:text][@lang]
+      bead[:prayer].to_s
     end
-    lang_code = @lang == :en ? "en-US" : "ml-IN"
-    is_last   = @step >= @sequence.length - 1
+  end
+
+  def speak_current
+    key     = audio_key_for_bead(@sequence[@step])
+    lang    = @lang.to_s
+    is_last = @step >= @sequence.length - 1
     `
-      window.speechSynthesis.cancel();
-      var utt = new SpeechSynthesisUtterance(#{text});
-      utt.lang = #{lang_code};
-      utt.onend = function() {
+      RosaryAudio.play(#{key}, #{lang}, function() {
         if (window._rosaryAutoPlay && !#{is_last}) {
           #{auto_advance_and_speak};
         } else {
           #{mutate @speaking = false};
           if (#{is_last}) { #{mutate @auto_play = false}; window._rosaryAutoPlay = false; }
         }
-      };
-      utt.onboundary = function(e) {
-        if (e.name !== 'word') return;
-        document.querySelectorAll('.prayer-word').forEach(function(s) {
-          var start = parseInt(s.dataset.start);
-          var finish = parseInt(s.dataset.finish);
-          if (e.charIndex >= start && e.charIndex < finish) {
-            s.classList.add('word-active');
-          } else {
-            s.classList.remove('word-active');
-          }
-        });
-      };
-      utt.onerror = function() { #{mutate @speaking = false} };
-      window.speechSynthesis.speak(utt);
+      });
     `
     mutate @speaking = true
   end
@@ -560,12 +521,16 @@ class RosaryApp < HyperComponent
   def toggle_auto_play
     new_val = !@auto_play
     `window._rosaryAutoPlay = #{new_val}`
-    mutate @auto_play = new_val
-    speak_current if new_val && !@speaking
+    if new_val
+      mutate @auto_play = true
+      speak_current unless @speaking
+    else
+      stop_speaking
+    end
   end
 
   def stop_speaking
-    `window.speechSynthesis.cancel(); window._rosaryAutoPlay = false;`
+    `RosaryAudio.stop(); window._rosaryAutoPlay = false;`
     mutate { @speaking = false; @auto_play = false }
   end
 
