@@ -404,7 +404,21 @@ class RosaryApp < HyperComponent
       P(class: "prayer-count") { "#{bead[:count]} / #{bead[:total]}" }
     end
 
-    DIV(class: "prayer-body") { PRAYERS[prayer_key][:text][@lang] }
+    DIV(class: "prayer-body") do
+      if @speaking
+        offset = 0
+        PRAYERS[prayer_key][:text][@lang].split(/(\s+)/).each do |chunk|
+          if chunk.match?(/\S/)
+            SPAN(class: "prayer-word", data: { start: offset, finish: offset + chunk.length }) { chunk }
+          else
+            SPAN { chunk }
+          end
+          offset += chunk.length
+        end
+      else
+        PRAYERS[prayer_key][:text][@lang]
+      end
+    end
   end
 
   # ── Completion screen ────────────────────────────────────────────────────────
@@ -515,6 +529,18 @@ class RosaryApp < HyperComponent
           #{mutate @speaking = false};
           if (#{is_last}) { #{mutate @auto_play = false}; window._rosaryAutoPlay = false; }
         }
+      };
+      utt.onboundary = function(e) {
+        if (e.name !== 'word') return;
+        document.querySelectorAll('.prayer-word').forEach(function(s) {
+          var start = parseInt(s.dataset.start);
+          var finish = parseInt(s.dataset.finish);
+          if (e.charIndex >= start && e.charIndex < finish) {
+            s.classList.add('word-active');
+          } else {
+            s.classList.remove('word-active');
+          }
+        });
       };
       utt.onerror = function() { #{mutate @speaking = false} };
       window.speechSynthesis.speak(utt);
