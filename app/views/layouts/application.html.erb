@@ -58,27 +58,21 @@
       .mystery-day  { font-size: 0.7rem; color: #bbb; font-family: monospace; text-transform: uppercase; letter-spacing: 0.1em; }
       .mystery-name { font-size: 0.95rem; font-weight: 600; color: #222; margin-top: 0.15rem; display: flex; align-items: center; }
       .step-counter { font-family: monospace; font-size: 0.68rem; color: #ccc; margin-top: 0.2rem; display: block; }
-      .header-right { display: flex; align-items: center; gap: 0.75rem; }
+      .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem; }
+      .header-btns { display: flex; align-items: center; gap: 0.4rem; }
       .lang-btn {
         background: none; border: 1px solid #ddd; border-radius: 20px;
-        padding: 0.2rem 0.75rem; font-size: 0.7rem; cursor: pointer;
+        padding: 0.2rem 0.65rem; font-size: 0.65rem; cursor: pointer;
         color: #888; font-family: monospace; transition: all 0.15s;
+        white-space: nowrap;
       }
       .lang-btn:hover { border-color: #bbb; color: #444; }
 
-      /* Color swatches (inside menu) */
-      .color-swatches { display: flex; align-items: center; gap: 7px; }
-      .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; transition: transform 0.15s; flex-shrink: 0; }
+      /* Color swatches */
+      .color-swatches { display: flex; align-items: center; gap: 6px; }
+      .color-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: transform 0.15s; flex-shrink: 0; }
       .color-dot:hover { transform: scale(1.2); }
-      .color-dot-active { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px currentColor; transform: scale(1.15); }
-
-      /* Menu preferences strip */
-      .menu-prefs {
-        border-top: 1px solid #f0f0f0; margin-top: 0.75rem; padding-top: 0.85rem;
-        display: flex; align-items: center; justify-content: space-between;
-      }
-      .menu-btn-theme { background: #f4f4f4; color: #555; }
-      .menu-btn-theme:hover { background: #eaeaea; }
+      .color-dot-active { box-shadow: 0 0 0 2px #fff, 0 0 0 3px currentColor; transform: scale(1.15); }
 
       /* Progress */
       .progress-wrap { height: 2px; background: #f5f5f5; flex-shrink: 0; }

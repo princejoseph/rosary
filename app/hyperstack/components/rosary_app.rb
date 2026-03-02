@@ -100,20 +100,6 @@ class RosaryApp < HyperComponent
         end
       end
 
-      DIV(class: "menu-prefs") do
-        DIV(class: "color-swatches") do
-          COLORS.each do |c|
-            css = "color-dot#{@color == c[:key] ? ' color-dot-active' : ''}"
-            DIV(class: css, style: { background: c[:hex], color: c[:hex] })
-              .on(:click) { mutate { @color = c[:key]; save_color } }
-          end
-        end
-        BUTTON(class: "menu-btn menu-btn-theme") do
-          @theme == :classic ? "Minimal" : "Classic"
-        end.on(:click) do
-          mutate { @theme = (@theme == :classic ? :minimal : :classic); save_theme }
-        end
-      end
     end
   end
 
@@ -142,8 +128,22 @@ class RosaryApp < HyperComponent
         SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
       end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
-        BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
-          .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
+        DIV(class: "header-btns") do
+          BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
+            .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
+          BUTTON(class: "lang-btn") do
+            @theme == :classic ? "Minimal" : "Classic"
+          end.on(:click) do
+            mutate { @theme = (@theme == :classic ? :minimal : :classic); save_theme }
+          end
+        end
+        DIV(class: "color-swatches") do
+          COLORS.each do |c|
+            css = "color-dot#{@color == c[:key] ? ' color-dot-active' : ''}"
+            DIV(class: css, style: { background: c[:hex], color: c[:hex] })
+              .on(:click) { mutate { @color = c[:key]; save_color } }
+          end
+        end
       end
     end
   end
