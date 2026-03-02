@@ -16,7 +16,9 @@ class RosaryApp < HyperComponent
     @menu_open      = false
     @confirm_set    = nil
     @confirm_jump   = nil
-    @speaking       = false
+    @speaking          = false
+    @en_tts_available  = false
+    @ml_tts_available  = false
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
     today_date = Time.now.strftime("%Y-%m-%d")
@@ -30,6 +32,23 @@ class RosaryApp < HyperComponent
       @step = 0
     end
     @sequence = build_sequence(@set)
+  end
+
+  after_mount do
+    `
+      if (!('speechSynthesis' in window)) return;
+      var check = function() {
+        var voices = window.speechSynthesis.getVoices();
+        var hasEn = voices.some(function(v) { return v.lang.startsWith('en'); });
+        var hasMl = voices.some(function(v) { return v.lang.startsWith('ml'); });
+        #{mutate { @en_tts_available = `hasEn`; @ml_tts_available = `hasMl` }};
+      };
+      if (window.speechSynthesis.getVoices().length > 0) {
+        check();
+      } else {
+        window.speechSynthesis.addEventListener('voiceschanged', check, { once: true });
+      }
+    `
   end
 
   render do
@@ -321,13 +340,14 @@ class RosaryApp < HyperComponent
   # ── Shared nav buttons ───────────────────────────────────────────────────────
 
   def render_nav
-    is_last = @step >= @sequence.length - 1
+    is_last  = @step >= @sequence.length - 1
+    tts_ok   = @lang == :en ? @en_tts_available : @ml_tts_available
     DIV(class: "nav-row") do
       if @theme == :minimal
         BUTTON(class: "btn-nav", disabled: @step == 0) do
           I(class: "bi bi-arrow-left")
         end.on(:click) { go_back }
-        BUTTON(class: "btn-nav btn-nav-speak") do
+        BUTTON(class: "btn-nav btn-nav-speak", disabled: !tts_ok) do
           I(class: @speaking ? "bi bi-pause-fill" : "bi bi-play-fill")
         end.on(:click) { @speaking ? stop_speaking : speak_current }
         BUTTON(class: "btn-nav btn-nav-next") do
@@ -337,7 +357,7 @@ class RosaryApp < HyperComponent
         BUTTON(class: "btn-nav", disabled: @step == 0) do
           I(class: "bi bi-arrow-left-circle-fill", style: { fontSize: "3rem", color: "#ddd" })
         end.on(:click) { go_back }
-        BUTTON(class: "btn-nav btn-nav-speak") do
+        BUTTON(class: "btn-nav btn-nav-speak", disabled: !tts_ok) do
           icon = @speaking ? "bi-pause-circle-fill" : "bi-play-circle-fill"
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)", opacity: "0.7" })
         end.on(:click) { @speaking ? stop_speaking : speak_current }
