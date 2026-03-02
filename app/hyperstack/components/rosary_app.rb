@@ -6,7 +6,7 @@ class RosaryApp < HyperComponent
     { key: :rose,   hex: "#e05078" },
     { key: :blue,   hex: "#3b82f6" },
     { key: :teal,   hex: "#0ea5a0" },
-    { key: :purple, hex: "#8b5cf6" },
+    { key: :purple, hex: "#8b5cf6" }
   ]
 
   before_mount do

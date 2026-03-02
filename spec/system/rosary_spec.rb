@@ -44,13 +44,14 @@ RSpec.describe "Rosary app", type: :system do
 
   it "theme toggle switches between Minimal and Classic" do
     visit root_path
-    expect(page).to have_button("Classic", wait: 20)
-
-    click_button "Classic"
+    expect(page).to have_button("Minimal", wait: 20)
     expect(page).to have_css(".app.classic", wait: 5)
-    expect(page).to have_button("Minimal")
 
     click_button "Minimal"
     expect(page).not_to have_css(".app.classic", wait: 5)
+    expect(page).to have_button("Classic")
+
+    click_button "Classic"
+    expect(page).to have_css(".app.classic", wait: 5)
   end
 end
