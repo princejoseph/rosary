@@ -13,8 +13,9 @@ class RosaryApp < HyperComponent
     @lang        = load_saved_lang || :en
     @theme       = load_saved_theme || :classic
     @color       = load_saved_color || :blue
-    @menu_open   = false
-    @confirm_set = nil
+    @menu_open      = false
+    @confirm_set    = nil
+    @confirm_jump   = nil
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
     today_date = Time.now.strftime("%Y-%m-%d")
@@ -33,12 +34,14 @@ class RosaryApp < HyperComponent
   render do
     DIV(class: "app#{@theme == :classic ? ' classic' : ''} color-#{@color}") do
       render_mystery_menu
+      render_jump_confirm
       render_header
       if @step >= @sequence.length
         render_complete
       else
         render_progress_bar
         bead = @sequence[@step]
+        render_bead_header(bead)
         DIV(class: "content#{bead[:prayer] == :mystery_announce ? ' content-announce' : ''}") do
           if bead[:prayer] == :mystery_announce
             render_mystery_announce(bead)
@@ -113,6 +116,40 @@ class RosaryApp < HyperComponent
     end
   end
 
+  # ── Jump confirm modal ───────────────────────────────────────────────────────
+
+  def render_jump_confirm
+    return unless @confirm_jump
+
+    DIV(class: "menu-overlay").on(:click) { mutate @confirm_jump = nil }
+    DIV(class: "jump-confirm") do
+      P(class: "jump-confirm-title") do
+        @lang == :en ? "Jump to #{step_label(@confirm_jump)}?" : "#{step_label(@confirm_jump)}-ലേക്ക് പോകണോ?"
+      end
+      P(class: "jump-confirm-body") do
+        @lang == :en ? "Your current progress will be reset." : "നിലവിലെ പുരോഗതി നഷ്ടപ്പെടും."
+      end
+      DIV(class: "menu-warning-actions") do
+        BUTTON(class: "menu-btn menu-btn-cancel") { @lang == :en ? "Cancel" : "റദ്ദാക്കുക" }
+          .on(:click) { mutate @confirm_jump = nil }
+        BUTTON(class: "menu-btn menu-btn-switch") { @lang == :en ? "Jump" : "പോകുക" }
+          .on(:click) { jump_to_step }
+      end
+    end
+  end
+
+  def step_label(step)
+    bead = @sequence[step]
+    if bead[:prayer] == :mystery_announce
+      @lang == :en ? "#{bead[:ordinal][:en]} Mystery" : "#{bead[:ordinal][:ml]} രഹസ്യം"
+    elsif bead[:prayer] == :hail_holy_queen
+      @lang == :en ? "Closing Prayer" : "അന്ത്യ പ്രാർത്ഥന"
+    else
+      name = PRAYERS[bead[:prayer]][:name][@lang]
+      bead[:count] ? "#{name} #{bead[:count]}/#{bead[:total]}" : name
+    end
+  end
+
   # ── Header ──────────────────────────────────────────────────────────────────
 
   def render_header
@@ -121,17 +158,23 @@ class RosaryApp < HyperComponent
         DIV(class: "mystery-day")  { MYSTERIES[@set][:days][@lang] }
         DIV(class: "mystery-name") do
           I(class: "bi #{MYSTERIES[@set][:icon]} mystery-type-icon")
-          SPAN { MYSTERIES[@set][:name][@lang] }
+          SPAN { MYSTERIES[@set][:short][@lang] }
           I(class: "bi bi-chevron-down mystery-selector-icon")
         end
         SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
       end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
         DIV(class: "header-btns") do
-          BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
+          BUTTON(class: "lang-btn") { @lang == :en ? "മല" : "EN" }
             .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
           BUTTON(class: "lang-btn") do
-            @theme == :classic ? "Minimal" : "Classic"
+            if @theme == :classic
+              I(class: "bi bi-feather")
+              SPAN { " Minimal" }
+            else
+              I(class: "bi bi-book")
+              SPAN { " Classic" }
+            end
           end.on(:click) do
             mutate { @theme = (@theme == :classic ? :minimal : :classic); save_theme }
           end
@@ -156,18 +199,52 @@ class RosaryApp < HyperComponent
     end
   end
 
-  # ── Decade dots ──────────────────────────────────────────────────────────────
+  # ── Fixed bead header ────────────────────────────────────────────────────────
 
-  def render_decade_dots(current_decade)
-    DIV(class: "decade-dots") do
-      5.times do |i|
-        d = i + 1
-        css = d < current_decade ? "decade-dot done" : (d == current_decade ? "decade-dot active" : "decade-dot")
-        DIV(class: css) do
-          d < current_decade ? I(class: "bi bi-check-lg") : SPAN { d.to_s }
-        end
-      end
+  def render_bead_header(bead)
+    section = if bead[:prayer] == :hail_holy_queen
+      6
+    elsif bead[:decade]
+      bead[:decade]
+    else
+      0
     end
+
+    DIV(class: "bead-header") do
+      render_section_nav(section)
+
+      if bead[:decade]
+        render_decade_bead_track(bead)
+      elsif bead[:prayer] != :hail_holy_queen
+        render_opening_bead_track(bead)
+      end
+
+    end
+  end
+
+  # ── Section nav (O · 1 · 2 · 3 · 4 · 5 · C) ─────────────────────────────────
+
+  def render_section_nav(current_section)
+    DIV(class: "decade-dots") do
+      render_section_dot(0, current_section, "✦", target_step: 0, symbol: true)
+      5.times do |i|
+        render_section_dot(i + 1, current_section, (i + 1).to_s, target_step: 6 + i * 14)
+      end
+      render_section_dot(6, current_section, "✝", target_step: @sequence.length - 1, symbol: true)
+    end
+  end
+
+  def render_section_dot(idx, current_section, label, target_step:, symbol: false)
+    css = if idx < current_section
+      "decade-dot done"
+    elsif idx == current_section
+      "decade-dot active"
+    else
+      "decade-dot"
+    end
+    DIV(class: css) do
+      symbol ? SPAN(style: { fontSize: "14px" }) { label } : SPAN { label }
+    end.on(:click) { mutate @confirm_jump = target_step unless idx == current_section }
   end
 
   # ── Bead track: opening prayers (6 beads) ───────────────────────────────────
@@ -194,6 +271,7 @@ class RosaryApp < HyperComponent
         ].each do |b|
           state = b[:idx] < pos ? " bead-done" : (b[:idx] == pos ? " bead-active" : "")
           DIV(class: "bead#{b[:special] ? ' bead-special' : ''}#{state}")
+            .on(:click) { mutate @confirm_jump = b[:idx] unless b[:idx] == @step }
         end
       end
     end
@@ -202,6 +280,9 @@ class RosaryApp < HyperComponent
   # ── Bead track: one decade (13 beads) ───────────────────────────────────────
 
   def render_decade_bead_track(bead)
+    d    = bead[:decade]
+    base = 6 + (d - 1) * 14
+
     pos = case bead[:prayer]
     when :mystery_announce then -1
     when :our_father       then 0
@@ -216,17 +297,21 @@ class RosaryApp < HyperComponent
       DIV(class: "bead-track") do
         of_state = pos > 0 ? " bead-done" : (pos == 0 ? " bead-active" : "")
         DIV(class: "bead bead-special#{of_state}")
+          .on(:click) { mutate @confirm_jump = base + 1 unless base + 1 == @step }
 
         (1..10).each do |i|
           hm_state = pos > i ? " bead-done" : (pos == i ? " bead-active" : "")
           DIV(class: "bead#{hm_state}")
+            .on(:click) { mutate @confirm_jump = base + 1 + i unless base + 1 + i == @step }
         end
 
         gb_state = pos > 11 ? " bead-done" : (pos == 11 ? " bead-active" : "")
         DIV(class: "bead bead-special#{gb_state}")
+          .on(:click) { mutate @confirm_jump = base + 12 unless base + 12 == @step }
 
         f_state = pos > 12 ? " bead-done" : (pos == 12 ? " bead-active" : "")
         DIV(class: "bead bead-special#{f_state}")
+          .on(:click) { mutate @confirm_jump = base + 13 unless base + 13 == @step }
       end
     end
   end
@@ -258,9 +343,6 @@ class RosaryApp < HyperComponent
   # ── Mystery announce ─────────────────────────────────────────────────────────
 
   def render_mystery_announce(bead)
-    render_decade_dots(bead[:decade])
-    render_decade_bead_track(bead)
-
     DIV(class: "mystery-ordinal") do
       "#{bead[:ordinal][@lang]} #{@lang == :en ? 'Mystery' : 'രഹസ്യം'}"
     end
@@ -275,11 +357,6 @@ class RosaryApp < HyperComponent
 
     if bead[:prayer] == :hail_holy_queen
       DIV(class: "closing-label") { @lang == :en ? "Closing Prayer" : "അവസാന പ്രാർത്ഥന" }
-    elsif bead[:decade]
-      render_decade_dots(bead[:decade])
-      render_decade_bead_track(bead)
-    else
-      render_opening_bead_track(bead)
     end
 
     P(class: "prayer-context") { bead[:mystery][@lang] } if bead[:mystery]
@@ -348,14 +425,16 @@ class RosaryApp < HyperComponent
   def go_back
     return if @step <= 0
     mutate do
-      @step -= 1
+      @step           -= 1
+      @confirm_jump  = nil
       save_progress
     end
   end
 
   def advance
     mutate do
-      @step += 1
+      @step           += 1
+      @confirm_jump  = nil
       save_progress
     end
   end
@@ -364,6 +443,14 @@ class RosaryApp < HyperComponent
     mutate do
       @step = 0
       clear_saved_progress
+    end
+  end
+
+  def jump_to_step
+    mutate do
+      @step         = @confirm_jump
+      @confirm_jump = nil
+      save_progress
     end
   end
 
