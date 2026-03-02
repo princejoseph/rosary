@@ -17,7 +17,7 @@ class RosaryApp < HyperComponent
     @confirm_set    = nil
     @confirm_jump   = nil
     @speaking          = false
-    @en_tts_available  = false
+    @en_tts_available  = `'speechSynthesis' in window`
     @ml_tts_available  = false
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
@@ -37,16 +37,17 @@ class RosaryApp < HyperComponent
   after_mount do
     `
       if (!('speechSynthesis' in window)) return;
-      var check = function() {
+      var checkMl = function() {
         var voices = window.speechSynthesis.getVoices();
-        var hasEn = voices.some(function(v) { return v.lang.startsWith('en'); });
+        if (voices.length === 0) return false;
         var hasMl = voices.some(function(v) { return v.lang.startsWith('ml'); });
-        #{mutate { @en_tts_available = `hasEn`; @ml_tts_available = `hasMl` }};
+        #{mutate @ml_tts_available = `hasMl`};
+        return true;
       };
-      if (window.speechSynthesis.getVoices().length > 0) {
-        check();
-      } else {
-        window.speechSynthesis.addEventListener('voiceschanged', check, { once: true });
+      if (!checkMl()) {
+        window.speechSynthesis.addEventListener('voiceschanged', checkMl, { once: true });
+        setTimeout(checkMl, 1000);
+        setTimeout(checkMl, 3000);
       }
     `
   end
