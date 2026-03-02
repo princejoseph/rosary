@@ -16,6 +16,7 @@ class RosaryApp < HyperComponent
     @menu_open      = false
     @confirm_set    = nil
     @confirm_jump   = nil
+    @speaking       = false
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
     today_date = Time.now.strftime("%Y-%m-%d")
@@ -326,6 +327,9 @@ class RosaryApp < HyperComponent
         BUTTON(class: "btn-nav", disabled: @step == 0) do
           I(class: "bi bi-arrow-left")
         end.on(:click) { go_back }
+        BUTTON(class: "btn-nav btn-nav-speak") do
+          I(class: @speaking ? "bi bi-pause-fill" : "bi bi-play-fill")
+        end.on(:click) { @speaking ? stop_speaking : speak_current }
         BUTTON(class: "btn-nav btn-nav-next") do
           I(class: is_last ? "bi bi-check-lg" : "bi bi-arrow-right")
         end.on(:click) { advance }
@@ -333,6 +337,10 @@ class RosaryApp < HyperComponent
         BUTTON(class: "btn-nav", disabled: @step == 0) do
           I(class: "bi bi-arrow-left-circle-fill", style: { fontSize: "3rem", color: "#ddd" })
         end.on(:click) { go_back }
+        BUTTON(class: "btn-nav btn-nav-speak") do
+          icon = @speaking ? "bi-pause-circle-fill" : "bi-play-circle-fill"
+          I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)", opacity: "0.7" })
+        end.on(:click) { @speaking ? stop_speaking : speak_current }
         BUTTON(class: "btn-nav") do
           icon = is_last ? "bi-check-circle-fill" : "bi-arrow-right-circle-fill"
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)" })
@@ -425,6 +433,7 @@ class RosaryApp < HyperComponent
 
   def go_back
     return if @step <= 0
+    stop_speaking
     mutate do
       @step           -= 1
       @confirm_jump  = nil
@@ -433,6 +442,7 @@ class RosaryApp < HyperComponent
   end
 
   def advance
+    stop_speaking
     mutate do
       @step           += 1
       @confirm_jump  = nil
@@ -441,6 +451,7 @@ class RosaryApp < HyperComponent
   end
 
   def restart
+    stop_speaking
     mutate do
       @step = 0
       clear_saved_progress
@@ -448,11 +459,36 @@ class RosaryApp < HyperComponent
   end
 
   def jump_to_step
+    stop_speaking
     mutate do
       @step         = @confirm_jump
       @confirm_jump = nil
       save_progress
     end
+  end
+
+  def speak_current
+    bead = @sequence[@step]
+    text = if bead[:prayer] == :mystery_announce
+      "#{bead[:ordinal][@lang]} #{@lang == :en ? 'Mystery' : 'രഹസ്യം'}. #{bead[:mystery][@lang]}. #{bead[:mystery][:desc][@lang]}"
+    else
+      PRAYERS[bead[:prayer]][:text][@lang]
+    end
+    lang_code = @lang == :en ? "en-US" : "ml-IN"
+    `
+      window.speechSynthesis.cancel();
+      var utt = new SpeechSynthesisUtterance(#{text});
+      utt.lang = #{lang_code};
+      utt.onend = function() { #{mutate @speaking = false} };
+      utt.onerror = function() { #{mutate @speaking = false} };
+      window.speechSynthesis.speak(utt);
+    `
+    mutate @speaking = true
+  end
+
+  def stop_speaking
+    `window.speechSynthesis.cancel()`
+    mutate @speaking = false
   end
 
   def save_progress
