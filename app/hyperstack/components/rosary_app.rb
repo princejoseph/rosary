@@ -1,9 +1,18 @@
 class RosaryApp < HyperComponent
   include RosaryData
 
+  COLORS = [
+    { key: :amber,  hex: "#e8a020" },
+    { key: :rose,   hex: "#e05078" },
+    { key: :blue,   hex: "#3b82f6" },
+    { key: :teal,   hex: "#0ea5a0" },
+    { key: :purple, hex: "#8b5cf6" },
+  ]
+
   before_mount do
     @lang        = load_saved_lang || :en
     @theme       = load_saved_theme || :minimal
+    @color       = load_saved_color || :amber
     @menu_open   = false
     @confirm_set = nil
 
@@ -22,7 +31,7 @@ class RosaryApp < HyperComponent
   end
 
   render do
-    DIV(class: "app#{@theme == :classic ? ' classic' : ''}") do
+    DIV(class: "app#{@theme == :classic ? ' classic' : ''} color-#{@color}") do
       render_mystery_menu
       render_header
       if @step >= @sequence.length
@@ -118,6 +127,13 @@ class RosaryApp < HyperComponent
         SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
       end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
+        DIV(class: "color-swatches") do
+          COLORS.each do |c|
+            css = "color-dot#{@color == c[:key] ? ' color-dot-active' : ''}"
+            DIV(class: css, style: { background: c[:hex], color: c[:hex] })
+              .on(:click) { mutate { @color = c[:key]; save_color } }
+          end
+        end
         BUTTON(class: "lang-btn") { @lang == :en ? "ML" : "EN" }
           .on(:click) { mutate { @lang = (@lang == :en ? :ml : :en); save_lang } }
         BUTTON(class: "lang-btn") do
@@ -231,7 +247,7 @@ class RosaryApp < HyperComponent
         end.on(:click) { go_back }
         BUTTON(class: "btn-nav") do
           icon = is_last ? "bi-check-circle-fill" : "bi-arrow-right-circle-fill"
-          I(class: "bi #{icon}", style: { fontSize: "3rem", color: "#e8a020" })
+          I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)" })
         end.on(:click) { advance }
       end
     end
@@ -395,5 +411,14 @@ class RosaryApp < HyperComponent
 
   def save_lang
     `localStorage.setItem('rosary_lang', #{@lang})`
+  end
+
+  def load_saved_color
+    val = `localStorage.getItem('rosary_color')`
+    `#{val} === null` ? nil : val.to_sym
+  end
+
+  def save_color
+    `localStorage.setItem('rosary_color', #{@color})`
   end
 end
