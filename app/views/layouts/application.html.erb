@@ -161,6 +161,7 @@
       @media (min-height: 700px) {
         .app { --nav-h: 5rem; }
         .content { padding-bottom: var(--nav-h); }
+        /* Both themes float by default */
         .nav-row {
           position: absolute;
           bottom: 1.5rem;
@@ -172,13 +173,25 @@
           padding: 0.9rem 2rem;
           background: #fff;
         }
-        /* Classic gets the glass pill; minimal gets solid white */
+        /* Classic: glass pill */
         .app.classic .nav-row {
           border-radius: 16px;
           background: rgba(255,255,255,0.88);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
           box-shadow: 0 4px 24px rgba(0,0,0,0.1), 0 1px 6px rgba(0,0,0,0.06);
+        }
+      }
+      /* Minimal on mobile: full-width flush footer */
+      @media (min-height: 700px) and (max-width: 639px) {
+        .app:not(.classic) .nav-row {
+          bottom: 0;
+          left: 0;
+          right: 0;
+          transform: none;
+          width: 100%;
+          max-width: 100%;
+          padding: 0.9rem 2rem 1.5rem;
         }
       }
       .btn-nav { background: none; border: none; padding: 0; cursor: pointer; line-height: 1; }
