@@ -25,17 +25,25 @@
       body {
         margin: 0;
         font-family: 'Lora', Georgia, serif;
-        background: #fff;
+        background: #f0f0ed;
         color: #111;
         -webkit-text-size-adjust: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh; min-height: 100dvh;
       }
 
       /* App shell — locked to true viewport height, no page scroll */
       .app {
         height: 100vh; height: 100dvh;
+        width: 100%;
+        max-width: 560px;
         display: flex; flex-direction: column;
         overflow: hidden;
         position: relative;
+        background: #fff;
+        box-shadow: 0 0 60px rgba(0,0,0,0.08);
         --accent: #e8a020;
         --accent-dark: #c88a10;
         --accent-glow: rgba(232,160,32,0.2);
