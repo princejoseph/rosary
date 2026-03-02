@@ -219,6 +219,16 @@
       .app.classic .btn-nav:hover:not(:disabled) { transform: scale(1.1); }
       .app.classic .btn-nav:active:not(:disabled) { transform: scale(0.9); }
 
+      /* Auto-play toggle button */
+      .btn-nav-auto {
+        background: none; border: none; padding: 0.2rem 0.4rem; cursor: pointer;
+        font-size: 1rem; color: #ccc; border-radius: 6px;
+        transition: color 0.15s, background 0.15s;
+      }
+      .btn-nav-auto:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
+      .btn-nav-auto:hover:not(:disabled) { color: var(--accent); }
+      .btn-nav-auto.btn-nav-auto-on { color: var(--accent); background: var(--accent-bg); }
+
       /* Completion */
       .completion {
         flex: 1; display: flex; flex-direction: column;

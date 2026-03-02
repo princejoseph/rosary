@@ -17,6 +17,7 @@ class RosaryApp < HyperComponent
     @confirm_set    = nil
     @confirm_jump   = nil
     @speaking          = false
+    @auto_play         = false
     @en_tts_available  = `'speechSynthesis' in window`
     @ml_tts_available  = false
 
@@ -351,6 +352,9 @@ class RosaryApp < HyperComponent
         BUTTON(class: "btn-nav btn-nav-speak", disabled: !tts_ok) do
           I(class: @speaking ? "bi bi-pause-fill" : "bi bi-play-fill")
         end.on(:click) { @speaking ? stop_speaking : speak_current }
+        BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}", disabled: !tts_ok) do
+          I(class: "bi bi-repeat")
+        end.on(:click) { toggle_auto_play }
         BUTTON(class: "btn-nav btn-nav-next") do
           I(class: is_last ? "bi bi-check-lg" : "bi bi-arrow-right")
         end.on(:click) { advance }
@@ -362,6 +366,9 @@ class RosaryApp < HyperComponent
           icon = @speaking ? "bi-pause-circle-fill" : "bi-play-circle-fill"
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)", opacity: "0.7" })
         end.on(:click) { @speaking ? stop_speaking : speak_current }
+        BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}", disabled: !tts_ok) do
+          I(class: "bi bi-repeat", style: { fontSize: "1.1rem" })
+        end.on(:click) { toggle_auto_play }
         BUTTON(class: "btn-nav") do
           icon = is_last ? "bi-check-circle-fill" : "bi-arrow-right-circle-fill"
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)" })
@@ -496,20 +503,44 @@ class RosaryApp < HyperComponent
       PRAYERS[bead[:prayer]][:text][@lang]
     end
     lang_code = @lang == :en ? "en-US" : "ml-IN"
+    is_last   = @step >= @sequence.length - 1
     `
       window.speechSynthesis.cancel();
       var utt = new SpeechSynthesisUtterance(#{text});
       utt.lang = #{lang_code};
-      utt.onend = function() { #{mutate @speaking = false} };
+      utt.onend = function() {
+        if (window._rosaryAutoPlay && !#{is_last}) {
+          #{auto_advance_and_speak};
+        } else {
+          #{mutate @speaking = false};
+          if (#{is_last}) { #{mutate @auto_play = false}; window._rosaryAutoPlay = false; }
+        }
+      };
       utt.onerror = function() { #{mutate @speaking = false} };
       window.speechSynthesis.speak(utt);
     `
     mutate @speaking = true
   end
 
+  def auto_advance_and_speak
+    mutate do
+      @step          += 1
+      @confirm_jump   = nil
+      save_progress
+    end
+    speak_current
+  end
+
+  def toggle_auto_play
+    new_val = !@auto_play
+    `window._rosaryAutoPlay = #{new_val}`
+    mutate @auto_play = new_val
+    speak_current if new_val && !@speaking
+  end
+
   def stop_speaking
-    `window.speechSynthesis.cancel()`
-    mutate @speaking = false
+    `window.speechSynthesis.cancel(); window._rosaryAutoPlay = false;`
+    mutate { @speaking = false; @auto_play = false }
   end
 
   def save_progress
