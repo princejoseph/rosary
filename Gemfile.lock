@@ -201,6 +201,10 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
+    dotenv (3.2.0)
+    dotenv-rails (3.2.0)
+      dotenv (= 3.2.0)
+      railties (>= 6.1)
     drb (2.2.3)
     erb (4.0.4)
       cgi (>= 0.3.3)
@@ -477,6 +481,7 @@ DEPENDENCIES
   brakeman
   capybara
   debug
+  dotenv-rails
   foreman
   hyper-component!
   hyper-model!

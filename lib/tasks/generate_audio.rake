@@ -16,6 +16,7 @@ require "fileutils"
 namespace :rosary do
   desc "Generate audio files for all prayers and mysteries via Google Cloud TTS"
   task generate_audio: :environment do
+    require Rails.root.join("app/hyperstack/components/rosary_data")
     include RosaryData
 
     api_key = ENV.fetch("GOOGLE_TTS_API_KEY") do
@@ -82,6 +83,12 @@ namespace :rosary do
       %i[en ml].each do |lang|
         text = texts[lang]
         next if text.nil? || text.strip.empty?
+
+        mp3_path = Rails.root.join("public", "audio", lang.to_s, "#{key}.mp3")
+        if File.exist?(mp3_path)
+          puts "  – #{lang}/#{key} (skipped, already exists)"
+          next
+        end
 
         mp3, timings = synthesize.call(text, lang, api_uri, voices)
         save_files.call(key, lang, mp3, timings)

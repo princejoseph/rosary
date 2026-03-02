@@ -70,4 +70,5 @@ end
 
 group :development do
   gem "foreman"
+  gem "dotenv-rails"
 end
