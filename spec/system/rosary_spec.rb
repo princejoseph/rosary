@@ -33,13 +33,13 @@ RSpec.describe "Rosary app", type: :system do
 
   it "language toggle switches between EN and ML" do
     visit root_path
-    expect(page).to have_button("മല", wait: 20)
-
-    click_button "മല"
-    expect(page).to have_button("EN", wait: 5)
+    expect(page).to have_button("EN", wait: 20)
 
     click_button "EN"
     expect(page).to have_button("മല", wait: 5)
+
+    click_button "മല"
+    expect(page).to have_button("EN", wait: 5)
   end
 
   it "theme toggle switches between Minimal and Classic" do

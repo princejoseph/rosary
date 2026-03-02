@@ -10,7 +10,7 @@ class RosaryApp < HyperComponent
   ]
 
   before_mount do
-    @lang        = load_saved_lang || :en
+    @lang        = load_saved_lang || :ml
     @theme       = load_saved_theme || :classic
     @color       = load_saved_color || :blue
     @menu_open      = false
