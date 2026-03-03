@@ -526,16 +526,17 @@ class RosaryApp < HyperComponent
     key     = audio_key_for_bead(@sequence[@step])
     lang    = @lang.to_s
     is_last = @step >= @sequence.length - 1
-    `
-      RosaryAudio.play(#{key}, #{lang}, function() {
-        if (window._rosaryAutoPlay && !#{is_last}) {
-          #{auto_advance_and_speak};
-        } else {
-          #{mutate @speaking = false};
-          if (#{is_last}) { #{mutate @auto_play = false}; window._rosaryAutoPlay = false; }
-        }
-      });
-    `
+    RosaryAudio.play(key, lang) do
+      if `window._rosaryAutoPlay` && !is_last
+        auto_advance_and_speak
+      else
+        mutate @speaking = false
+        if is_last
+          mutate @auto_play = false
+          `window._rosaryAutoPlay = false`
+        end
+      end
+    end
     mutate @speaking = true
   end
 
@@ -556,16 +557,17 @@ class RosaryApp < HyperComponent
         key     = audio_key_for_bead(@sequence[@step])
         lang    = @lang.to_s
         is_last = @step >= @sequence.length - 1
-        `
-          RosaryAudio.play(#{key}, #{lang}, function() {
-            if (window._rosaryAutoPlay && !#{is_last}) {
-              #{auto_advance_and_speak};
-            } else {
-              #{mutate @speaking = false};
-              if (#{is_last}) { #{mutate @auto_play = false}; window._rosaryAutoPlay = false; }
-            }
-          });
-        `
+        RosaryAudio.play(key, lang) do
+          if `window._rosaryAutoPlay` && !is_last
+            auto_advance_and_speak
+          else
+            mutate @speaking = false
+            if is_last
+              mutate @auto_play = false
+              `window._rosaryAutoPlay = false`
+            end
+          end
+        end
         mutate { @auto_play = true; @speaking = true }
       else
         mutate @auto_play = true
@@ -576,7 +578,8 @@ class RosaryApp < HyperComponent
   end
 
   def stop_speaking
-    `RosaryAudio.stop(); window._rosaryAutoPlay = false;`
+    RosaryAudio.stop
+    `window._rosaryAutoPlay = false`
     mutate { @speaking = false; @auto_play = false }
   end
 
