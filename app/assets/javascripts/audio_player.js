@@ -19,13 +19,18 @@ var RosaryAudio = (function () {
   }
 
   function highlightWord(idx) {
+    var activeEl = null;
     document.querySelectorAll('.prayer-word').forEach(function (s) {
       if (parseInt(s.dataset.idx, 10) === idx) {
         s.classList.add('word-active');
+        activeEl = s;
       } else {
         s.classList.remove('word-active');
       }
     });
+    if (activeEl) {
+      activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   function stop() {
