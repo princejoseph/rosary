@@ -457,15 +457,18 @@
       .app.dark .decade-dot.current { background: #1c1c1e; border-color: var(--accent); color: var(--accent); }
       .app.dark .prayer-heading { color: #f2f2f7; }
       .app.dark .prayer-context { color: var(--accent); }
-      .app.dark .prayer-count { color: #636366; }
+      .app.dark .prayer-count { color: var(--accent); }
+      .app.dark.classic .prayer-count { background: #2c2c2e; border-color: var(--accent); color: var(--accent); }
       .app.dark .prayer-body { color: #e5e5ea; }
       .app.dark:not(.classic) .prayer-body { border-top-color: #3a3a3c; }
       .app.dark.classic .prayer-body { background: #2c2c2e; border-left-color: var(--accent); box-shadow: none; }
       .app.dark .closing-label { color: #636366; }
       .app.dark .content-announce { background: #1c1c1e; }
-      .app.dark .mystery-ordinal { color: var(--accent); opacity: 0.8; background: #2c2c2e; border-color: var(--accent); }
-      .app.dark .mystery-heading { color: #f2f2f7; }
-      .app.dark .mystery-desc { background: #2c2c2e; border-left-color: var(--accent); color: #e5e5ea; }
+      .app.dark .mystery-ordinal { color: var(--accent); opacity: 0.8; }
+      .app.dark.classic .mystery-ordinal { background: #2c2c2e; border-color: var(--accent); }
+      .app.dark .mystery-heading { color: var(--accent); }
+      .app.dark .mystery-desc { color: #e5e5ea; }
+      .app.dark.classic .mystery-desc { background: #2c2c2e; border-left-color: var(--accent); flex: initial; }
       .app.dark:not(.classic) .nav-row { background: transparent; border-top-color: #3a3a3c; box-shadow: none; }
       .app.dark.classic .nav-row { background: rgba(44,44,46,0.92); border-color: #3a3a3c; box-shadow: 0 4px 24px rgba(0,0,0,0.4); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
       .app.dark:not(.classic) .btn-nav-auto.btn-nav-auto-on { background: none; }
@@ -478,6 +481,9 @@
       .app.dark .menu-item { border-bottom-color: #3a3a3c; }
       .app.dark .menu-item-name { color: #f2f2f7; }
       .app.dark .menu-item-days { color: #636366; }
+      .app.dark .menu-item-confirm { background: #3a3a3c; }
+      .app.dark .menu-item-confirm .menu-item-name { color: var(--accent); }
+      .app.dark .menu-item-confirm .menu-item-days { color: var(--accent); }
       .app.dark .menu-warning { border-top-color: #3a3a3c; }
       .app.dark .menu-warning-text { color: #636366; }
       .app.dark .menu-btn-cancel { background: #3a3a3c; color: #aeaeb2; }
