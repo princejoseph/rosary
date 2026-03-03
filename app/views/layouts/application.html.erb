@@ -206,7 +206,7 @@
           padding: 0.9rem 2rem 1.5rem;
         }
       }
-      .btn-nav { background: none; border: none; padding: 0; cursor: pointer; line-height: 1; }
+      .btn-nav { background: none; border: none; padding: 0; cursor: pointer; line-height: 1; touch-action: manipulation; }
       .btn-nav:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
 
       /* Nav — minimal: plain arrow icons */
@@ -217,7 +217,7 @@
       .app:not(.classic) .btn-nav:hover:not(:disabled) { color: var(--accent-dark); }
 
       /* Nav — classic: icon buttons */
-      .app.classic .btn-nav { transition: transform 0.15s; }
+      .app.classic .btn-nav { transition: transform 0.15s; padding: 0.5rem; }
       .app.classic .btn-nav:hover:not(:disabled) { transform: scale(1.1); }
       .app.classic .btn-nav:active:not(:disabled) { transform: scale(0.9); }
 
@@ -225,7 +225,7 @@
       .btn-nav-auto {
         background: none; border: none; padding: 0.2rem 0.4rem; cursor: pointer;
         font-size: 1rem; color: #ccc; border-radius: 6px;
-        transition: color 0.15s, background 0.15s;
+        transition: color 0.15s, background 0.15s; touch-action: manipulation;
       }
       .btn-nav-auto:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
       .btn-nav-auto:hover:not(:disabled) { color: var(--accent); }
