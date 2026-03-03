@@ -39,7 +39,7 @@ class RosaryApp < HyperComponent
       render_jump_confirm
       render_header
       if @step >= @sequence.length
-        render_complete
+        DIV(class: "content") { render_complete }
       else
         render_progress_bar
         bead = @sequence[@step]
@@ -322,7 +322,8 @@ class RosaryApp < HyperComponent
   # ── Shared nav buttons ───────────────────────────────────────────────────────
 
   def render_nav
-    is_last = @step >= @sequence.length - 1
+    is_last    = @step >= @sequence.length - 1
+    is_complete = @step >= @sequence.length
     DIV(class: "nav-row") do
       if @theme == :minimal
         BUTTON(class: "btn-nav", disabled: @step == 0) do
@@ -334,21 +335,21 @@ class RosaryApp < HyperComponent
         BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}") do
           I(class: "bi bi-repeat")
         end.on(:click) { toggle_auto_play }
-        BUTTON(class: "btn-nav btn-nav-next") do
+        BUTTON(class: "btn-nav btn-nav-next", disabled: is_complete) do
           I(class: is_last ? "bi bi-check-lg" : "bi bi-arrow-right")
         end.on(:click) { advance }
       else
         BUTTON(class: "btn-nav", disabled: @step == 0) do
-          I(class: "bi bi-arrow-left-circle-fill", style: { fontSize: "3rem", color: "#ddd" })
+          I(class: "bi bi-arrow-left-circle-fill", style: { fontSize: "3rem", color: "var(--accent)" })
         end.on(:click) { go_back }
         BUTTON(class: "btn-nav btn-nav-speak") do
           icon = @speaking ? "bi-pause-circle-fill" : "bi-play-circle-fill"
-          I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)", opacity: "0.7" })
+          I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)" })
         end.on(:click) { @speaking ? stop_speaking : speak_current }
         BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}") do
           I(class: "bi bi-repeat", style: { fontSize: "1.1rem" })
         end.on(:click) { toggle_auto_play }
-        BUTTON(class: "btn-nav") do
+        BUTTON(class: "btn-nav", disabled: is_complete) do
           icon = is_last ? "bi-check-circle-fill" : "bi-arrow-right-circle-fill"
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)" })
         end.on(:click) { advance }
@@ -359,11 +360,26 @@ class RosaryApp < HyperComponent
   # ── Mystery announce ─────────────────────────────────────────────────────────
 
   def render_mystery_announce(bead)
-    DIV(class: "mystery-ordinal") do
-      "#{bead[:ordinal][@lang]} #{@lang == :en ? 'Mystery' : 'രഹസ്യം'}"
+    if @speaking
+      full_text = if @lang == :en
+        "#{bead[:ordinal][:en]} Mystery. #{bead[:mystery][:en]}. #{bead[:mystery][:desc][:en]}"
+      else
+        "#{bead[:ordinal][:ml]} രഹസ്യം. #{bead[:mystery][:ml]}. #{bead[:mystery][:desc][:ml]}"
+      end
+      DIV(class: "mystery-desc") do
+        words = full_text.split
+        words.each_with_index do |word, idx|
+          SPAN(class: "prayer-word", data: { idx: idx }) { word }
+          SPAN { " " } unless idx == words.length - 1
+        end
+      end
+    else
+      DIV(class: "mystery-ordinal") do
+        "#{bead[:ordinal][@lang]} #{@lang == :en ? 'Mystery' : 'രഹസ്യം'}"
+      end
+      H1(class: "mystery-heading") { bead[:mystery][@lang] }
+      P(class: "mystery-desc") { bead[:mystery][:desc][@lang] }
     end
-    H1(class: "mystery-heading") { bead[:mystery][@lang] }
-    P(class: "mystery-desc") { bead[:mystery][:desc][@lang] }
   end
 
   # ── Prayer bead ──────────────────────────────────────────────────────────────
