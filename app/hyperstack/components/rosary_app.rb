@@ -552,8 +552,24 @@ class RosaryApp < HyperComponent
     new_val = !@auto_play
     `window._rosaryAutoPlay = #{new_val}`
     if new_val
-      mutate @auto_play = true
-      speak_current unless @speaking
+      unless @speaking
+        key     = audio_key_for_bead(@sequence[@step])
+        lang    = @lang.to_s
+        is_last = @step >= @sequence.length - 1
+        `
+          RosaryAudio.play(#{key}, #{lang}, function() {
+            if (window._rosaryAutoPlay && !#{is_last}) {
+              #{auto_advance_and_speak};
+            } else {
+              #{mutate @speaking = false};
+              if (#{is_last}) { #{mutate @auto_play = false}; window._rosaryAutoPlay = false; }
+            }
+          });
+        `
+        mutate { @auto_play = true; @speaking = true }
+      else
+        mutate @auto_play = true
+      end
     else
       stop_speaking
     end
