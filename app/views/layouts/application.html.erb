@@ -404,52 +404,68 @@
         .bead-header { padding-left: 1.25rem; padding-right: 1.25rem; }
       }
 
-      /* ── Dark mode (easter egg: triple-tap flower on completion screen) ── */
-      .app.dark { background: #000000; color: #f2f2f7; }
-      .app.dark .app-header { border-bottom-color: #111111; }
+      /* ── Dark mode (easter egg: triple-tap step counter) ── */
+      /* Mobile (AMOLED): pure black palette */
+      .app.dark {
+        --dk-bg:      #000000;
+        --dk-surface: #111111;
+        --dk-border:  #1c1c1c;
+        --dk-hover:   #2a2a2a;
+        background: var(--dk-bg); color: #f2f2f7;
+      }
+      /* Desktop: iOS-style dark gray palette */
+      @media (min-width: 640px) {
+        .app.dark {
+          --dk-bg:      #1c1c1e;
+          --dk-surface: #2c2c2e;
+          --dk-border:  #3a3a3c;
+          --dk-hover:   #48484a;
+        }
+      }
+      .app.dark .app-header { border-bottom-color: var(--dk-surface); }
       .app.dark .mystery-name { color: #f2f2f7; }
       .app.dark .mystery-day,
       .app.dark .step-counter { opacity: 0.5; }
       .app.dark .lang-btn { color: var(--accent); border-color: var(--accent); }
       .app.dark .lang-btn:hover, .app.dark .lang-btn:active { background: rgba(255,255,255,0.08); }
-      .app.dark .progress-wrap { background: #111111; }
-      .app.dark .bead-header { background: #000000; }
-      .app.dark .decade-dot { background: #111111; border-color: #1c1c1c; color: #636366; }
+      .app.dark .progress-wrap { background: var(--dk-surface); }
+      .app.dark .bead-header { background: var(--dk-bg); }
+      .app.dark .decade-dot { background: var(--dk-surface); border-color: var(--dk-border); color: #636366; }
       .app.dark .decade-dot.done { background: var(--accent); border-color: var(--accent); color: #fff; }
-      .app.dark .decade-dot.current { background: #000000; border-color: var(--accent); color: var(--accent); }
-.app.dark .prayer-heading { color: #f2f2f7; }
+      .app.dark .decade-dot.current { background: var(--dk-bg); border-color: var(--accent); color: var(--accent); }
+      .app.dark .prayer-heading { color: #f2f2f7; }
       .app.dark .prayer-context { color: var(--accent); }
       .app.dark .prayer-count { color: var(--accent); }
-      .app.dark.classic .prayer-count { background: #111111; border-color: var(--accent); color: var(--accent); }
+      .app.dark.classic .prayer-count { background: var(--dk-surface); border-color: var(--accent); color: var(--accent); }
       .app.dark .prayer-body { color: #e5e5ea; }
-      .app.dark:not(.classic) .prayer-body { border-top-color: #1c1c1c; }
-      .app.dark.classic .prayer-body { background: #111111; border-left-color: var(--accent); box-shadow: none; }
+      .app.dark:not(.classic) .prayer-body { border-top-color: var(--dk-border); }
+      .app.dark.classic .prayer-body { background: var(--dk-surface); border-left-color: var(--accent); box-shadow: none; }
       .app.dark .closing-label { color: #636366; }
-      .app.dark .content-announce { background: #000000; }
+      .app.dark .content-announce { background: var(--dk-bg); }
       .app.dark .mystery-ordinal { color: var(--accent); opacity: 0.8; }
-      .app.dark.classic .mystery-ordinal { background: #111111; border-color: var(--accent); }
+      .app.dark.classic .mystery-ordinal { background: var(--dk-surface); border-color: var(--accent); }
       .app.dark .mystery-heading { color: var(--accent); }
       .app.dark .mystery-desc { color: #e5e5ea; }
-      .app.dark.classic .mystery-desc { background: #111111; border-left-color: var(--accent); flex: initial; }
-      .app.dark:not(.classic) .nav-row { background: transparent; border-top-color: #111111; }
-      .app.dark.classic .nav-row { background: #000; border-top-color: #111111; }
+      .app.dark.classic .mystery-desc { background: var(--dk-surface); border-left-color: var(--accent); flex: initial; }
+      .app.dark:not(.classic) .nav-row { background: transparent; border-top-color: var(--dk-border); }
+      .app.dark.classic .nav-row { background: var(--dk-bg); border-top-color: var(--dk-border); }
       .app.dark:not(.classic) .btn-nav-auto.btn-nav-auto-on { background: none; }
-      .app.dark.classic .btn-nav-auto { background: #1c1c1c; color: #aeaeb2; }
-      .app.dark.classic .btn-nav-auto:hover:not(:disabled):not(.btn-nav-auto-on) { background: #2a2a2a; color: #e5e5ea; }
+      .app.dark.classic .btn-nav-auto { background: var(--dk-border); color: #aeaeb2; }
+      .app.dark.classic .btn-nav-auto:hover:not(:disabled):not(.btn-nav-auto-on) { background: var(--dk-hover); color: #e5e5ea; }
       .app.dark.classic .btn-nav-auto.btn-nav-auto-on { background: var(--accent); color: #000; }
       .app.dark .completion-heading { color: #f2f2f7; }
       .app.dark .completion-sub { color: #636366; }
-      .app.dark .mystery-menu { background: #111111; }
-      .app.dark .menu-item { border-bottom-color: #1c1c1c; }
+      .app.dark .mystery-menu { background: var(--dk-surface); }
+      .app.dark .menu-item { border-bottom-color: var(--dk-border); }
       .app.dark .menu-item-name { color: #f2f2f7; }
       .app.dark .menu-item-days { color: #636366; }
-      .app.dark .menu-item-confirm { background: #1c1c1c; }
+      .app.dark .menu-item-confirm { background: var(--dk-border); }
       .app.dark .menu-item-confirm .menu-item-name { color: var(--accent); }
       .app.dark .menu-item-confirm .menu-item-days { color: var(--accent); }
-      .app.dark .menu-warning { border-top-color: #1c1c1c; }
+      .app.dark .menu-warning { border-top-color: var(--dk-border); }
       .app.dark .menu-warning-text { color: #636366; }
-      .app.dark .menu-btn-cancel { background: #1c1c1c; color: #aeaeb2; }
-      .app.dark .jump-confirm { background: #111111; }
+      .app.dark .menu-btn-cancel { background: var(--dk-border); color: #aeaeb2; }
+      .app.dark .jump-confirm { background: var(--dk-surface); }
       .app.dark .jump-confirm-title { color: #f2f2f7; }
       .app.dark .jump-confirm-body { color: #636366; }
     </style>
