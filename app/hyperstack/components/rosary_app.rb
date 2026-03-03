@@ -243,11 +243,11 @@ class RosaryApp < HyperComponent
 
   def render_section_nav(current_section)
     DIV(class: "decade-dots") do
-      render_section_dot(0, current_section, "✦", target_step: 0, symbol: true)
+      render_section_dot(0, current_section, "✦\uFE0E", target_step: 0, symbol: true)
       5.times do |i|
         render_section_dot(i + 1, current_section, (i + 1).to_s, target_step: 6 + i * 14)
       end
-      render_section_dot(6, current_section, "✝", target_step: @sequence.length - 1, symbol: true)
+      render_section_dot(6, current_section, "✝\uFE0E", target_step: @sequence.length - 1, symbol: true)
     end
   end
 
@@ -431,7 +431,7 @@ class RosaryApp < HyperComponent
   def render_complete
     DIV(class: "completion") do
       if @theme == :minimal
-        P(class: "completion-symbol") { "✝" }
+        P(class: "completion-symbol") { "✝\uFE0E" }
       else
         I(class: "bi bi-flower3 completion-icon")
       end
