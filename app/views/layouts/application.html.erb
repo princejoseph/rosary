@@ -230,6 +230,9 @@
       .btn-nav-auto:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
       .btn-nav-auto:hover:not(:disabled) { color: var(--accent); }
       .btn-nav-auto.btn-nav-auto-on { color: var(--accent); background: var(--accent-bg); }
+      .app.classic .btn-nav-auto { width: 3rem; height: 3rem; border-radius: 50%; padding: 0; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; background: #e5e5ea; color: #8e8e93; }
+      .app.classic .btn-nav-auto:hover:not(:disabled) { background: #d1d1d6; color: #636366; }
+      .app.classic .btn-nav-auto.btn-nav-auto-on { background: var(--accent); color: #fff; }
 
       /* Completion */
       .completion {
@@ -438,6 +441,49 @@
       @media (max-width: 600px) {
         .bead-header { padding-left: 1.25rem; padding-right: 1.25rem; }
       }
+
+      /* ── Dark mode (easter egg: triple-tap flower on completion screen) ── */
+      .app.dark { background: #1c1c1e; color: #f2f2f7; }
+      .app.dark .app-header { border-bottom-color: #2c2c2e; }
+      .app.dark .mystery-name { color: #f2f2f7; }
+      .app.dark .mystery-day,
+      .app.dark .step-counter { opacity: 0.5; }
+      .app.dark .lang-btn { color: var(--accent); border-color: var(--accent); }
+      .app.dark .lang-btn:hover { background: var(--accent-bg); }
+      .app.dark .progress-wrap { background: #2c2c2e; }
+      .app.dark .bead-header { background: #1c1c1e; }
+      .app.dark .decade-dot { background: #2c2c2e; border-color: #3a3a3c; color: #636366; }
+      .app.dark .decade-dot.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .app.dark .decade-dot.current { background: #1c1c1e; border-color: var(--accent); color: var(--accent); }
+      .app.dark .prayer-heading { color: #f2f2f7; }
+      .app.dark .prayer-context { color: var(--accent); }
+      .app.dark .prayer-count { color: #636366; }
+      .app.dark .prayer-body { color: #e5e5ea; }
+      .app.dark:not(.classic) .prayer-body { border-top-color: #3a3a3c; }
+      .app.dark.classic .prayer-body { background: #2c2c2e; border-left-color: var(--accent); box-shadow: none; }
+      .app.dark .closing-label { color: #636366; }
+      .app.dark .content-announce { background: #1c1c1e; }
+      .app.dark .mystery-ordinal { color: var(--accent); opacity: 0.8; background: #2c2c2e; border-color: var(--accent); }
+      .app.dark .mystery-heading { color: #f2f2f7; }
+      .app.dark .mystery-desc { background: #2c2c2e; border-left-color: var(--accent); color: #e5e5ea; }
+      .app.dark:not(.classic) .nav-row { background: transparent; border-top-color: #3a3a3c; box-shadow: none; }
+      .app.dark.classic .nav-row { background: rgba(44,44,46,0.92); border-color: #3a3a3c; box-shadow: 0 4px 24px rgba(0,0,0,0.4); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+      .app.dark:not(.classic) .btn-nav-auto.btn-nav-auto-on { background: none; }
+      .app.dark.classic .btn-nav-auto { background: #3a3a3c; color: #aeaeb2; }
+      .app.dark.classic .btn-nav-auto:hover:not(:disabled) { background: #48484a; color: #e5e5ea; }
+      .app.dark.classic .btn-nav-auto.btn-nav-auto-on { background: var(--accent); color: #000; }
+      .app.dark .completion-heading { color: #f2f2f7; }
+      .app.dark .completion-sub { color: #636366; }
+      .app.dark .mystery-menu { background: #2c2c2e; }
+      .app.dark .menu-item { border-bottom-color: #3a3a3c; }
+      .app.dark .menu-item-name { color: #f2f2f7; }
+      .app.dark .menu-item-days { color: #636366; }
+      .app.dark .menu-warning { border-top-color: #3a3a3c; }
+      .app.dark .menu-warning-text { color: #636366; }
+      .app.dark .menu-btn-cancel { background: #3a3a3c; color: #aeaeb2; }
+      .app.dark .jump-confirm { background: #2c2c2e; }
+      .app.dark .jump-confirm-title { color: #f2f2f7; }
+      .app.dark .jump-confirm-body { color: #636366; }
     </style>
   </head>
 

@@ -13,6 +13,7 @@ class RosaryApp < HyperComponent
     @lang        = load_saved_lang || :ml
     @theme       = load_saved_theme || :classic
     @color       = load_saved_color || :blue
+    @dark        = load_saved_dark || false
     @menu_open      = false
     @confirm_set    = nil
     @confirm_jump   = nil
@@ -34,7 +35,7 @@ class RosaryApp < HyperComponent
   end
 
   render do
-    DIV(class: "app#{@theme == :classic ? ' classic' : ''} color-#{@color}") do
+    DIV(class: "app#{@theme == :classic ? ' classic' : ''} color-#{@color}#{@dark ? ' dark' : ''}") do
       render_mystery_menu
       render_jump_confirm
       render_header
@@ -164,6 +165,19 @@ class RosaryApp < HyperComponent
           I(class: "bi bi-chevron-down mystery-selector-icon")
         end
         SPAN(class: "step-counter") { "#{[ @step, @sequence.length ].min} / #{@sequence.length}" }
+          .on(:click) do |e|
+            e.stop_propagation
+            `
+              clearTimeout(window._darkTapTimer);
+              window._darkTapCount = (window._darkTapCount || 0) + 1;
+              if (window._darkTapCount >= 3) {
+                window._darkTapCount = 0;
+                #{mutate { @dark = !@dark; save_dark }};
+              } else {
+                window._darkTapTimer = setTimeout(function() { window._darkTapCount = 0; }, 500);
+              }
+            `
+          end
       end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
         DIV(class: "header-btns") do
@@ -347,7 +361,7 @@ class RosaryApp < HyperComponent
           I(class: "bi #{icon}", style: { fontSize: "3rem", color: "var(--accent)" })
         end.on(:click) { @speaking ? stop_speaking : speak_current }
         BUTTON(class: "btn-nav-auto#{@auto_play ? ' btn-nav-auto-on' : ''}") do
-          I(class: "bi bi-repeat", style: { fontSize: "1.1rem" })
+          I(class: "bi bi-repeat")
         end.on(:click) { toggle_auto_play }
         BUTTON(class: "btn-nav", disabled: is_complete) do
           icon = is_last ? "bi-check-circle-fill" : "bi-arrow-right-circle-fill"
@@ -605,5 +619,13 @@ class RosaryApp < HyperComponent
 
   def save_color
     `localStorage.setItem('rosary_color', #{@color})`
+  end
+
+  def load_saved_dark
+    `localStorage.getItem('rosary_dark') === 'true'`
+  end
+
+  def save_dark
+    `localStorage.setItem('rosary_dark', #{@dark})`
   end
 end
