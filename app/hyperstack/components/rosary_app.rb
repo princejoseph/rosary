@@ -17,8 +17,23 @@ class RosaryApp < HyperComponent
     @menu_open      = false
     @confirm_set    = nil
     @confirm_jump   = nil
-    @speaking   = false
-    @auto_play  = false
+    @speaking    = false
+    @auto_play   = false
+    @can_install  = false
+    @show_ios_hint = `!navigator.standalone &&
+                       /iphone|ipad|ipod/i.test(navigator.userAgent) &&
+                       localStorage.getItem('rosary_ios_hint_dismissed') !== '1'`
+
+    win = Native(`window`)
+    win.addEventListener('beforeinstallprompt') do |e|
+      e.preventDefault
+      `window._installPrompt = #{e.to_n}`
+      mutate @can_install = true
+    end
+    win.addEventListener('appinstalled') do
+      `window._installPrompt = null`
+      mutate @can_install = false
+    end
 
     today_set  = MYSTERY_FOR_DAY[Time.now.wday]
     today_date = Time.now.strftime("%Y-%m-%d")
@@ -39,6 +54,7 @@ class RosaryApp < HyperComponent
       render_mystery_menu
       render_jump_confirm
       render_header
+      render_ios_hint if @show_ios_hint
       if @step >= @sequence.length
         DIV(class: "content") { render_complete }
       else
@@ -181,6 +197,11 @@ class RosaryApp < HyperComponent
       end.on(:click) { mutate @menu_open = true }
       DIV(class: "header-right") do
         DIV(class: "header-btns") do
+          if @can_install
+            BUTTON(class: "lang-btn") do
+              I(class: "bi bi-download")
+            end.on(:click) { install_app }
+          end
           BUTTON(class: "lang-btn") do
             I(class: "bi bi-translate")
             SPAN { @lang == :en ? " മല" : " EN" }
@@ -206,6 +227,23 @@ class RosaryApp < HyperComponent
         end
       end
     end
+  end
+
+  # ── iOS install hint ─────────────────────────────────────────────────────────
+
+  def render_ios_hint
+    DIV(class: "ios-hint") do
+      I(class: "bi bi-box-arrow-up ios-hint-icon")
+      SPAN(class: "ios-hint-text") do
+        @lang == :en ? "Tap  and \"Add to Home Screen\" to install" : "\"Add to Home Screen\" ടാപ്പ് ചെയ്ത് ഇൻസ്റ്റാൾ ചെയ്യൂ"
+      end
+      BUTTON(class: "ios-hint-close") { "✕" }.on(:click) { dismiss_ios_hint }
+    end
+  end
+
+  def dismiss_ios_hint
+    `localStorage.setItem('rosary_ios_hint_dismissed', '1')`
+    mutate @show_ios_hint = false
   end
 
   # ── Progress bar ────────────────────────────────────────────────────────────
@@ -581,6 +619,13 @@ class RosaryApp < HyperComponent
     RosaryAudio.stop
     `window._rosaryAutoPlay = false`
     mutate { @speaking = false; @auto_play = false }
+  end
+
+  def install_app
+    return unless `window._installPrompt`
+    Native(`window._installPrompt`).prompt
+    `window._installPrompt = null`
+    mutate @can_install = false
   end
 
   def save_progress
