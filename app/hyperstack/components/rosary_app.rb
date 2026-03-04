@@ -25,6 +25,8 @@ class RosaryApp < HyperComponent
                        localStorage.getItem('rosary_ios_hint_dismissed') !== '1'`
 
     win = Native(`window`)
+    nav = Native(`navigator`)
+    nav.serviceWorker.register("/sw.js") if nav[:serviceWorker]
     win.addEventListener("beforeinstallprompt") do |e|
       e.preventDefault
       `window._installPrompt = #{e.to_n}`
