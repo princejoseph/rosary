@@ -13,6 +13,13 @@
     <%= yield :head %>
 
     <link rel="manifest" href="/manifest.json">
+    <script>
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window._installPrompt = e;
+        window._installPromptReady = true;
+      });
+    </script>
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">

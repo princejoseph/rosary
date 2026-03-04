@@ -19,7 +19,8 @@ class RosaryApp < HyperComponent
     @confirm_jump   = nil
     @speaking    = false
     @auto_play   = false
-    @can_install  = false
+    # Check if beforeinstallprompt already fired before Opal mounted
+    @can_install  = `!!window._installPromptReady`
     @show_ios_hint = `!navigator.standalone &&
                        /iphone|ipad|ipod/i.test(navigator.userAgent) &&
                        localStorage.getItem('rosary_ios_hint_dismissed') !== '1'`
@@ -34,6 +35,7 @@ class RosaryApp < HyperComponent
     end
     win.addEventListener("appinstalled") do
       `window._installPrompt = null`
+      `window._installPromptReady = false`
       mutate @can_install = false
     end
 
