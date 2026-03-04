@@ -25,12 +25,12 @@ class RosaryApp < HyperComponent
                        localStorage.getItem('rosary_ios_hint_dismissed') !== '1'`
 
     win = Native(`window`)
-    win.addEventListener('beforeinstallprompt') do |e|
+    win.addEventListener("beforeinstallprompt") do |e|
       e.preventDefault
       `window._installPrompt = #{e.to_n}`
       mutate @can_install = true
     end
-    win.addEventListener('appinstalled') do
+    win.addEventListener("appinstalled") do
       `window._installPrompt = null`
       mutate @can_install = false
     end
