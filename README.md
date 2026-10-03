@@ -7,7 +7,9 @@ one bead at a time, or prays the whole rosary aloud for you in **auto mode**.
 It is designed for phones and can be installed to the home
 screen like a native app.
 
-## 🔁 Auto mode: pray the full rosary hands-free
+## Features
+
+### 🔁 Auto mode: pray the full rosary hands-free
 
 Tap the **repeat button (🔁)** in the bottom bar and Japamala prays the whole
 rosary for you, from start to finish:
@@ -22,7 +24,7 @@ next or back at any time to stop it and go back to praying at your own pace.
 It works well for praying along while walking or driving, praying as a family,
 or for anyone who would rather listen than read.
 
-## Features
+### More features
 
 - **Today's mysteries picked for you**: Joyful (Mon, Sat), Sorrowful (Tue, Fri),
   Glorious (Wed, Sun) and Luminous (Thu). You can pick a different set from the menu.
@@ -34,8 +36,6 @@ or for anyone who would rather listen than read.
 - **Malayalam ↔ English toggle**: Malayalam is the default.
 - **Audio prayers**: each prayer has pre-recorded audio in both languages
   (Google Cloud TTS), with the words highlighted as they are spoken.
-- **Auto mode**: the app prays the whole rosary hands-free
-  ([see above](#-auto-mode-pray-the-full-rosary-hands-free)).
 - **Personalization**: Classic or Minimal layout and five accent colours
   (amber, rose, blue, teal, purple).
 - **Dark mode**: a pure-black AMOLED theme. It is a hidden feature: tap the
