@@ -1,3 +1,4 @@
+# backtick_javascript: true
 # RosaryAudio — plays pre-generated MP3s with word-by-word highlighting.
 #
 # Audio files:  /audio/{lang}/{key}.mp3

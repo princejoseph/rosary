@@ -1,22 +1,26 @@
 # Starting a New Hyperstack Hobby Project
 
-This guide documents the exact steps to create a new Rails 7.2 + Hyperstack app from scratch. Use it as a template for future projects.
+This guide documents the exact steps to create a new Rails 8.0 + Hyperstack app from scratch. Use it as a template for future projects.
 
 ### Prerequisites
 
-- Ruby 3.1+ (`ruby -v`)
-- Rails 7.2+ (`gem install rails`)
+- Ruby 3.4 (`ruby -v`)
+- Rails 8.0 (`gem install rails -v '~> 8.0.5'`). 8.0 is the version tested with Hyperstack; 8.1 isn't.
 - Node.js 18+ (`node -v`) — needed by Opal/Sprockets asset compilation
 - SQLite3 (`sqlite3 --version`)
 
 ### 1. Create the Rails app
 
 ```bash
-rails new my_app --database=sqlite3 --skip-test --skip-bundle
+rails _8.0.5.1_ new my_app --database=sqlite3 --skip-test --skip-bundle --skip-asset-pipeline
 cd my_app
 ```
 
 > `--skip-bundle` lets you edit the Gemfile before the first `bundle install`.
+>
+> Rails 8 dropped `--asset-pipeline=sprockets` (it only generates Propshaft), but
+> Hyperstack needs Sprockets to compile Ruby through Opal. So skip the asset
+> pipeline here and add Sprockets by hand in the next step.
 
 ### 2. Add Hyperstack to Gemfile
 
@@ -25,24 +29,36 @@ Open `Gemfile` and add the following. All Hyperstack gems must be pinned to the
 
 ```ruby
 # Hyperstack — React-style components in Ruby
-# Pin ALL hyperstack gems to the same fork/branch (Rails 7 / Ruby 3 fixes)
-gem "rails-hyperstack", github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/rails-hyperstack/*.gemspec"
-gem "hyper-component",  github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-component/*.gemspec"
-gem "hyper-state",      github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-state/*.gemspec"
-gem "hyperstack-config",github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyperstack-config/*.gemspec"
-gem "hyper-store",      github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-store/*.gemspec"
-gem "hyper-model",      github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-model/*.gemspec"
-gem "hyper-router",     github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-router/*.gemspec"
-gem "hyper-operation",  github: "princejoseph/hyperstack", branch: "rails-7-compatibility", glob: "ruby/hyper-operation/*.gemspec"
+gem "sprockets-rails"
+
+# Pin ALL hyperstack gems to the same fork/branch (Rails 8 / Ruby 3.4 fixes)
+gem "rails-hyperstack", github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/rails-hyperstack/*.gemspec"
+gem "hyper-component",  github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyper-component/*.gemspec"
+gem "hyper-state",      github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyper-state/*.gemspec"
+gem "hyperstack-config",github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyperstack-config/*.gemspec"
+gem "hyper-store",      github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyper-store/*.gemspec"
+gem "hyper-model",      github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyper-model/*.gemspec"
+gem "hyper-router",     github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyper-router/*.gemspec"
+gem "hyper-operation",  github: "princejoseph/hyperstack", branch: "rails-8-compatibility", glob: "ruby/hyper-operation/*.gemspec"
 gem "react-rails", ">= 2.4.0", "< 3.0"
-gem "opal-rails"
+gem "opal-sprockets"   # NOT opal-rails, see below
+
+# Rails 8.0's to_json passes `quirks_mode:`, which json 3.0 removed (Ruby 3.4 ships json 3.x)
+gem "json", "< 3.0"
+# react-rails 2.7 calls ConnectionPool.new(hash); connection_pool 3.0 is keyword-only
+gem "connection_pool", "< 3.0"
 ```
+
+> **Why opal-sprockets?** opal-rails 2.x requires `rails < 7.3`, and 3.x replaced
+> its Sprockets integration with a separate build step, so Hyperstack's
+> `//= require hyperstack-loader` can't be found. opal-sprockets is the same
+> Sprockets integration without the Rails dependency.
 
 > **Why pin all 8 gems?** `rails-hyperstack` depends on `hyper-model`, `hyper-router`, and
 > `hyper-operation`. If you don't specify them explicitly, Bundler resolves them from
 > rubygems.org where the published `1.0.alpha1.8` still has unguarded Rails 7.2-breaking
 > calls (e.g. `InternalMetadata.do_not_synchronize`). Pinning all of them to the fork
-> ensures every gem gets the Rails 7 / Ruby 3 fixes.
+> ensures every gem gets the Rails 8 / Ruby 3.4 fixes.
 
 Also remove `importmap-rails`, `turbo-rails`, and `stimulus-rails` from the Gemfile —
 they conflict with Hyperstack's Sprockets-based JS pipeline.
@@ -50,6 +66,30 @@ they conflict with Hyperstack's Sprockets-based JS pipeline.
 ```bash
 bundle install
 ```
+
+Then wire Opal into Sprockets in `config/application.rb`:
+
+```ruby
+Bundler.require(*Rails.groups)
+
+require "opal/sprockets"   # after Bundler.require
+
+module MyApp
+  class Application < Rails::Application
+    config.load_defaults 8.0
+    # ...
+    config.assets.paths += Opal.paths
+
+    # opal-rails 3 still comes in as a dependency of rails-hyperstack and hooks
+    # `opal:build` into `assets:precompile`. With no entrypoints that is a no-op.
+    config.opal.entrypoints = {}
+  end
+end
+```
+
+Also create an empty `app/opal/` directory (`mkdir app/opal && touch app/opal/.keep`).
+Without it `assets:precompile` fails with `MissingEntrypointError`. It only runs
+during a production build, so you won't see this until you deploy.
 
 ### 3. Run the Hyperstack install generator
 
@@ -91,7 +131,8 @@ Create `app/assets/javascripts/application.js`:
 //= require hyperstack-loader
 ```
 
-Update `app/assets/config/manifest.js` to include JS files:
+Create `app/assets/config/manifest.js` (`--skip-asset-pipeline` doesn't generate it,
+and without it boot fails with `Sprockets::Railtie::ManifestNeededError`):
 
 ```javascript
 //= link_tree ../images
@@ -227,6 +268,10 @@ app/
 
 | Problem | Fix |
 |---------|-----|
+| `couldn't find file 'hyperstack-loader'` | Use `opal-sprockets` (not `opal-rails`), add `require "opal/sprockets"` and `config.assets.paths += Opal.paths` to `config/application.rb`. Note: `bin/rails app:update` overwrites `application.rb`, so re-check these lines after running it. |
+| `unknown keyword: quirks_mode` | `gem "json", "< 3.0"` |
+| `wrong number of arguments (given 1, expected 0)` at boot | `gem "connection_pool", "< 3.0"` |
+| Page shows the layout but no components (with HyperModel) | `ApplicationRecord.primary_abstract_class` isn't implemented on the client. Use `self.abstract_class = true` when `RUBY_ENGINE == "opal"`. |
 | `undefined method 'do_not_synchronize'` on boot | Pin ALL 8 Hyperstack gems to the fork branch — `rails-hyperstack` pulls in `hyper-model` etc. as transitive dependencies, which default to the unfixed rubygems.org version |
 | `yarn failed to install react` during `hyperstack:install` | Expected and harmless for Sprockets-only apps. The initializer was created successfully; just re-run `bundle install`. |
 | `importmap` / `turbo` JS conflicts | Remove `importmap-rails`, `turbo-rails`, `stimulus-rails` from Gemfile |

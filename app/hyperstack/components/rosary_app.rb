@@ -1,3 +1,4 @@
+# backtick_javascript: true
 class RosaryApp < HyperComponent
   include RosaryData
 

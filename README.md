@@ -46,7 +46,7 @@ screen like a native app.
 
 ## Tech stack
 
-- Rails 7.2 + [Hyperstack](https://github.com/hyperstack-org/hyperstack): the
+- Ruby 3.4, Rails 8.0 + [Hyperstack](https://github.com/hyperstack-org/hyperstack): the
   whole UI is written in Ruby components and compiled to JavaScript by Opal
 - Sprockets only (no webpack or importmap). Pure frontend, with `Hyperstack.transport = :none`
 - Hosted on Fly.io (app `japamala`). GitHub Actions runs lint and specs, then
@@ -80,6 +80,6 @@ Run the specs with `bundle exec rspec`.
 
 ## Building your own Hyperstack app
 
-The step-by-step guide to setting up a Rails 7.2 + Hyperstack app from scratch
+The step-by-step guide to setting up a Rails 8.0 + Hyperstack app from scratch
 (Gemfile pins, generator quirks, transport modes, gotchas) is in
 **[HYPERSTACK.md](HYPERSTACK.md)**.
