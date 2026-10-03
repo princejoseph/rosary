@@ -9,23 +9,6 @@ screen like a native app.
 
 ## Features
 
-### 🔁 Auto mode: pray the full rosary hands-free
-
-Tap the **repeat button (🔁)** in the bottom bar and Japamala prays the whole
-rosary for you, from start to finish:
-
-- Each prayer is read aloud in Malayalam or English, with the words highlighted
-  as they are spoken.
-- It moves to the next bead by itself and announces each mystery as it comes.
-- It goes through all five decades to the closing prayers, then stops.
-
-You can start it from any bead, so you can pick up partway through. Tap 🔁 again, pause,
-next or back at any time to stop it and go back to praying at your own pace.
-It works well for praying along while walking or driving, praying as a family,
-or for anyone who would rather listen than read.
-
-### More features
-
 - **Today's mysteries picked for you**: Joyful (Mon, Sat), Sorrowful (Tue, Fri),
   Glorious (Wed, Sun) and Luminous (Thu). You can pick a different set from the menu.
 - **Bead-by-bead guidance**: the full text of every prayer (Apostles' Creed, Our
@@ -44,6 +27,21 @@ or for anyone who would rather listen than read.
   browser (localStorage). There are no accounts and nothing is sent to a server.
 - **Installable PWA**: an install button on Android Chrome, and an "Add to Home
   Screen" hint on iOS Safari.
+
+### 🔁 Auto mode: pray the full rosary hands-free
+
+Tap the **repeat button (🔁)** in the bottom bar and Japamala prays the whole
+rosary for you, from start to finish:
+
+- Each prayer is read aloud in Malayalam or English, with the words highlighted
+  as they are spoken.
+- It moves to the next bead by itself and announces each mystery as it comes.
+- It goes through all five decades to the closing prayers, then stops.
+
+You can start it from any bead, so you can pick up partway through. Tap 🔁 again, pause,
+next or back at any time to stop it and go back to praying at your own pace.
+It works well for praying along while walking or driving, praying as a family,
+or for anyone who would rather listen than read.
 
 ## Tech stack
 
