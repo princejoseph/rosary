@@ -3,8 +3,24 @@
 **Live at [japamala.fly.dev](https://japamala.fly.dev)**
 
 A bilingual (Malayalam / English) rosary guide that walks you through the rosary
-one bead at a time. It is designed for phones and can be installed to the home
+one bead at a time, or prays the whole rosary aloud for you in **auto mode**.
+It is designed for phones and can be installed to the home
 screen like a native app.
+
+## 🔁 Auto mode: pray the full rosary hands-free
+
+Tap the **repeat button (🔁)** in the bottom bar and Japamala prays the whole
+rosary for you, from start to finish:
+
+- Each prayer is read aloud in Malayalam or English, with the words highlighted
+  as they are spoken.
+- It moves to the next bead by itself and announces each mystery as it comes.
+- It goes through all five decades to the closing prayers, then stops.
+
+You can start it from any bead, so you can pick up partway through. Tap 🔁 again, pause,
+next or back at any time to stop it and go back to praying at your own pace.
+It works well for praying along while walking or driving, praying as a family,
+or for anyone who would rather listen than read.
 
 ## Features
 
@@ -18,11 +34,8 @@ screen like a native app.
 - **Malayalam ↔ English toggle**: Malayalam is the default.
 - **Audio prayers**: each prayer has pre-recorded audio in both languages
   (Google Cloud TTS), with the words highlighted as they are spoken.
-- **Auto mode (hands-free rosary)**: turn on auto-play and the app prays the
-  whole rosary by itself. It reads each prayer aloud, moves to the next bead,
-  announces each mystery, and keeps going through all five decades to the end.
-  You can start it from any point, and tapping next or back stops it. You can
-  pray along without touching the phone.
+- **Auto mode**: the app prays the whole rosary hands-free
+  ([see above](#-auto-mode-pray-the-full-rosary-hands-free)).
 - **Personalization**: Classic or Minimal layout and five accent colours
   (amber, rose, blue, teal, purple).
 - **Dark mode**: a pure-black AMOLED theme. It is a hidden feature: tap the
