@@ -30,18 +30,19 @@ screen like a native app.
 
 ### 🔁 Auto mode: pray the full rosary hands-free
 
-Tap the **repeat button (🔁)** in the bottom bar and Japamala prays the whole
-rosary for you, from start to finish:
-
-- Each prayer is read aloud in Malayalam or English, with the words highlighted
-  as they are spoken.
-- It moves to the next bead by itself and announces each mystery as it comes.
-- It goes through all five decades to the closing prayers, then stops.
-
-You can start it from any bead, so you can pick up partway through. Tap 🔁 again, pause,
-next or back at any time to stop it and go back to praying at your own pace.
-It works well for praying along while walking or driving, praying as a family,
-or for anyone who would rather listen than read.
+> [!TIP]
+> Tap the **repeat button (🔁)** in the bottom bar and Japamala prays the whole
+> rosary for you, from start to finish:
+>
+> - Each prayer is read aloud in Malayalam or English, with the words highlighted
+>   as they are spoken.
+> - It moves to the next bead by itself and announces each mystery as it comes.
+> - It goes through all five decades to the closing prayers, then stops.
+>
+> You can start it from any bead, so you can pick up partway through. Tap 🔁 again, pause,
+> next or back at any time to stop it and go back to praying at your own pace.
+> It works well for praying along while walking or driving, praying as a family,
+> or for anyone who would rather listen than read.
 
 ## Tech stack
 
