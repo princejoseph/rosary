@@ -17,8 +17,12 @@ screen like a native app.
   Tap any bead or section to jump to it, with a confirmation first.
 - **Malayalam ↔ English toggle**: Malayalam is the default.
 - **Audio prayers**: each prayer has pre-recorded audio in both languages
-  (Google Cloud TTS), with the words highlighted as they are spoken. **Auto-play**
-  moves on to the next prayer by itself, so you can pray hands-free.
+  (Google Cloud TTS), with the words highlighted as they are spoken.
+- **Auto mode (hands-free rosary)**: turn on auto-play and the app prays the
+  whole rosary by itself. It reads each prayer aloud, moves to the next bead,
+  announces each mystery, and keeps going through all five decades to the end.
+  You can start it from any point, and tapping next or back stops it. You can
+  pray along without touching the phone.
 - **Personalization**: Classic or Minimal layout and five accent colours
   (amber, rose, blue, teal, purple).
 - **Dark mode**: a pure-black AMOLED theme. It is a hidden feature: tap the
